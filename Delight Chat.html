@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="Delight Chat.css">
+  <title>Delight Chat - Seller</title>
+  <script>
+    (function() {
+      const stored = localStorage.getItem("darkMode");
+      const isDark = stored === null ? true : stored === "true";
+      if (isDark) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+      }
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <button class="chat-back-btn" onclick="goBack()">&#10094;</button>
+      <img src="lo.png" id="chatSellerLogo" class="chat-seller-logo" onerror="this.src='lo.png'">
+      <div class="chat-seller-text">
+        <span class="chat-seller-name" id="chatSellerName">Loading...</span>
+        <span class="chat-seller-status" id="chatSellerStatus">Online</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Info Bar -->
+  <div class="chat-product-bar" id="chatProductBar" style="display:none;">
+    <img src="" id="chatProductImg" class="chat-product-img" onerror="this.src='noimg.png'">
+    <div class="chat-product-details">
+      <span class="chat-product-title" id="chatProductTitle"></span>
+      <span class="chat-product-price" id="chatProductPrice"></span>
+    </div>
+    <button class="chat-view-product-btn" onclick="viewProduct()">View</button>
+  </div>
+
+  <!-- Messages Area -->
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-welcome" id="chatWelcome">
+      <div class="chat-welcome-icon">&#128172;</div>
+      <h3>Customer Chat</h3>
+      <p>Respond to buyer messages here</p>
+    </div>
+  </div>
+
+  <!-- Typing Indicator -->
+  <div class="chat-typing" id="chatTyping" style="display:none;">
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+    <span>typing...</span>
+  </div>
+
+  <!-- Input Area -->
+  <div class="chat-input-area">
+    <button class="chat-attach-btn" onclick="toggleAttachMenu()">&#128206;</button>
+    <div class="chat-input-wrapper">
+      <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off">
+      <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">&#10148;</button>
+    </div>
+    <input type="file" id="chatPhotoInput" accept="image/*" multiple style="display:none;" onchange="handleChatPhotos(this)">
+  </div>
+
+  <!-- Attach Menu -->
+  <div class="chat-attach-menu" id="chatAttachMenu" style="display:none;">
+    <div class="attach-option" onclick="openPhotoPicker()">
+      <span>&#128247;</span>
+      <span>Photo</span>
+    </div>
+    <div class="attach-option" onclick="shareProduct()">
+      <span>&#128230;</span>
+      <span>Product</span>
+    </div>
+  </div>
+
+  <!-- Login Prompt Modal -->
+  <div class="chat-login-modal" id="chatLoginModal" style="display:none;">
+    <div class="chat-login-overlay" onclick="closeLoginModal()"></div>
+    <div class="chat-login-sheet">
+      <div class="chat-login-icon">&#128274;</div>
+      <h3>Login Required</h3>
+      <p>Please login to respond to customers</p>
+      <button class="chat-login-btn" onclick="goToLogin()">Login Now</button>
+      <button class="chat-login-cancel" onclick="closeLoginModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Image Preview Modal -->
+  <div class="chat-image-modal" id="chatImageModal" style="display:none;" onclick="closeImageModal()">
+    <img src="" id="chatImageModalImg" onclick="event.stopPropagation()">
+    <button class="chat-image-close" onclick="closeImageModal()">&#10005;</button>
+  </div>
+  <script src="Delight Chat.js"></script>
+  <script>
+  (function() {
+    const stored = localStorage.getItem("darkMode");
+    const isDark = stored === null ? true : stored === "true";
+    if (isDark) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+  })();
+  </script>
+</body>
+</html>

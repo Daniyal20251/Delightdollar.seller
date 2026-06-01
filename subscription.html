@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose Plan - Delightpk</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="subscription.css"
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🚀 Choose Your Seller Plan</h1>
+    <p>Upgrade your store and unlock premium features</p>
+  </div>
+
+  <div class="plans-grid">
+    <!-- FREE PLAN -->
+    <div class="plan-card plan-free">
+      <div class="plan-icon"><i class="fas fa-store"></i></div>
+      <div class="plan-name">Free Seller</div>
+      <div class="plan-price">Rs. 0<span>/month</span></div>
+      <div class="plan-billing">Forever free</div>
+      <ul class="features-list">
+        <li><i class="fas fa-check"></i> Basic Store Profile</li>
+        <li><i class="fas fa-check"></i> Limited Product Uploads</li>
+        <li><i class="fas fa-check"></i> Order Management</li>
+        <li><i class="fas fa-check"></i> Standard Store Link</li>
+        <li><i class="fas fa-lock"></i> Ads Locked</li>
+        <li><i class="fas fa-times"></i> Domain connection</li>
+        <li><i class="fas fa-times"></i> Analytics Chart Dashboard</li>
+        <li><i class="fas fa-times"></i> Premium Badge</li>
+      </ul>
+      <button class="btn-select btn-free" onclick="selectFree()">
+        <i class="fas fa-play"></i> Start Free
+      </button>
+    </div>
+
+    <!-- PAID PLAN -->
+    <div class="plan-card plan-paid">
+      <div class="badge-popular">⭐ RECOMMENDED</div>
+      <div class="plan-icon"><i class="fas fa-crown"></i></div>
+      <div class="plan-name">Premium Seller</div>
+      <div class="plan-price">Rs. 999<span>/month</span></div>
+      <div class="plan-billing">Billed monthly via EasyPaisa</div>
+      <ul class="features-list">
+        <li><i class="fas fa-check"></i>All Features</li>
+        <li><i class="fas fa-check"></i> <strong>7 Ads Unlocked</strong></li>
+        <li><i class="fas fa-check"></i> Domain connection</li>
+        <li><i class="fas fa-check"></i> Order Management</li>
+        <li><i class="fas fa-check"></i> Analytics Chart Dashboard</li>
+        <li><i class="fas fa-check"></i> Premium Support</li>
+        <li><i class="fas fa-check"></i> Premium Badge</li>
+      </ul>
+      <button class="btn-select btn-paid" onclick="showPaymentModal()">
+        <i class="fas fa-crown"></i> Go Premium
+      </button>
+    </div>
+  
+    <!-- YEARLY PLAN -->
+    <div class="plan-card plan-yearly">
+      <div class="badge-popular">💎 BEST VALUE</div>
+      <div class="plan-icon"><i class="fas fa-gem"></i></div>
+      <div class="plan-name">Yearly Premium</div>
+      <div class="plan-price">Rs. 9,999<span>/year</span></div>
+      <div class="plan-billing">Billed yearly via EasyPaisa</div>
+      <ul class="features-list">
+        <li><i class="fas fa-check"></i>All Features</li>
+        <li><i class="fas fa-check"></i> <strong>Save Rs. 1,989/year</strong></li>
+        <li><i class="fas fa-check"></i> <strong>7 Ads Unlocked</strong></li>
+        <li><i class="fas fa-check"></i> Domain connection</li>
+        <li><i class="fas fa-check"></i> Order Management</li>
+        <li><i class="fas fa-check"></i> Analytics Chart Dashboard</li>
+        <li><i class="fas fa-check"></i> Premium Support</li>
+        <li><i class="fas fa-check"></i> Premium Badge</li>
+      </ul>
+      <button class="btn-select btn-yearly" onclick="showYearlyPaymentModal()">
+        <i class="fas fa-gem"></i> Go Yearly
+      </button>
+    </div>
+</div>
+</div>
+
+<!-- ===== PAYMENT MODAL ===== -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal-box">
+    <h3>💳 Complete Payment</h3>
+
+    <!-- QR Code Section -->
+    <div class="qr-section">
+      <div class="qr-image-wrapper">
+        <img src="Delight icons/easypaisamerchant.png" alt="EasyPaisa Merchant QR Code">
+      </div>
+      <div class="scan-hint">
+        <i class="fas fa-qrcode"></i> Open EasyPaisa App → Scan & Pay
+      </div>
+    </div>
+
+    <!-- Merchant Info -->
+    <div class="merchant-info">
+      <div class="merchant-name">Delightpk</div>
+      <div class="merchant-number">991945256</div>
+      <div class="merchant-label">Merchant Till Number</div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+      <strong>📋 Manual Payment Steps:</strong><br>
+      1. Open EasyPaisa app<br>
+      2. Tap <strong>Scan QR</strong><br>
+      3. Tap <strong>Enter till number</strong><br>
+      4. Enter amount: <strong>Rs. 999</strong><br>
+      5. After payment, enter your details below
+    </div>
+
+    <!-- Transaction ID -->
+    <div class="input-group">
+      <label><i class="fas fa-receipt"></i> Transaction ID (TID)</label>
+      <input type="text" id="transactionId" placeholder="e.g. ID#123XXXXX" maxlength="20">
+    </div>
+
+    <!-- Phone Number -->
+    <div class="input-group">
+      <label><i class="fas fa-phone"></i> Your Phone Number (used for payment)</label>
+      <input type="text" id="paymentPhone" placeholder="03XX-XXXXXXX" maxlength="11">
+    </div>
+
+    <!-- Verify Button -->
+    <button class="btn-verify" id="verifyBtn" onclick="verifyPayment()">
+      <i class="fas fa-check-circle"></i> Verify & Activate Premium
+    </button>
+
+    <!-- Back Link -->
+    <a href="#" class="back-link" onclick="closePaymentModal(); return false;">
+      <i class="fas fa-arrow-left"></i> Back to Plans
+    </a>
+  </div>
+</div>
+
+<!-- ===== YEARLY PAYMENT MODAL ===== -->
+<div class="modal-overlay" id="yearlyPaymentModal">
+  <div class="modal-box">
+    <h3>💳 Complete Payment</h3>
+
+    <div class="qr-section">
+      <div class="qr-image-wrapper">
+        <img src="Delight icons/easypaisamerchant.png" alt="EasyPaisa Merchant QR Code">
+      </div>
+      <div class="scan-hint">
+        <i class="fas fa-qrcode"></i> Open EasyPaisa App → Scan & Pay
+      </div>
+    </div>
+
+    <div class="merchant-info">
+      <div class="merchant-name">Delightpk</div>
+      <div class="merchant-number">991945256</div>
+      <div class="merchant-label">Merchant Till Number</div>
+    </div>
+
+    <div class="instructions">
+      <strong>📋 Manual Payment Steps:</strong><br>
+      1. Open EasyPaisa app<br>
+      2. Tap <strong>Scan QR</strong><br>
+      3. Tap <strong>Enter till number</strong><br>
+      4. Enter amount: <strong>Rs. 9,999</strong><br>
+      5. After payment, enter your details below
+    </div>
+
+    <div class="input-group">
+      <label><i class="fas fa-receipt"></i> Transaction ID (TID)</label>
+      <input type="text" id="yearlyTransactionId" placeholder="e.g. ID#123XXXXX" maxlength="20">
+    </div>
+
+    <div class="input-group">
+      <label><i class="fas fa-phone"></i> Your Phone Number (used for payment)</label>
+      <input type="text" id="yearlyPaymentPhone" placeholder="03XX-XXXXXXX" maxlength="11">
+    </div>
+
+    <button class="btn-verify" id="yearlyVerifyBtn" onclick="verifyYearlyPayment()">
+      <i class="fas fa-check-circle"></i> Verify & Activate Yearly
+    </button>
+
+    <a href="#" class="back-link" onclick="closeYearlyPaymentModal(); return false;">
+      <i class="fas fa-arrow-left"></i> Back to Plans
+    </a>
+  </div>
+
+
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
+const seller = JSON.parse(localStorage.getItem("seller"));
+if(!seller) window.location.href = "login.html";
+
+function showPaymentModal() {
+  document.getElementById('paymentModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePaymentModal() {
+  document.getElementById('paymentModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function selectFree() {
+  showToast("✅ Free Plan Active", "Welcome to Delight.pk! You can upgrade anytime.", "fa-store");
+  setTimeout(() => window.location.href = "index.html", 1500);
+}
+
+
+function showYearlyPaymentModal() {
+  document.getElementById('yearlyPaymentModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeYearlyPaymentModal() {
+  document.getElementById('yearlyPaymentModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+async function verifyYearlyPayment() {
+  const tid = document.getElementById('yearlyTransactionId').value.trim();
+  const phone = document.getElementById('yearlyPaymentPhone').value.trim();
+
+  if(!tid || tid.length < 5) {
+    showToast("❌ Invalid TID", "Please enter valid Transaction ID", "fa-times", true);
+    return;
+  }
+  if(!phone || phone.length < 11) {
+    showToast("❌ Invalid Phone", "Please enter valid phone number", "fa-times", true);
+    return;
+  }
+
+  const btn = document.getElementById('yearlyVerifyBtn');
+  btn.innerHTML = '<span class="loading"></span> Verifying...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/verify-payment`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sellerPhone: seller.phone,
+        transactionId: tid,
+        paymentPhone: phone,
+        method: 'easypaisa',
+        amount: 9999,
+        plan: 'yearly'
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.success) {
+      // Calculate 1 year from now
+      const now = new Date();
+      const expiresAt = new Date(now);
+      expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+
+      const planData = {
+        type: 'yearly',
+        activatedAt: now.toISOString(),
+        expiresAt: expiresAt.toISOString(),
+        adsUnlocked: true,
+        premiumBadge: true,
+        transactionId: tid
+      };
+      localStorage.setItem(`sellerPlan_${seller.phone}`, JSON.stringify(planData));
+
+      seller.plan = 'yearly';
+      localStorage.setItem("seller", JSON.stringify(seller));
+
+      showToast("🎉 Yearly Premium Activated!", `Valid until ${expiresAt.toLocaleDateString()}`, "fa-gem");
+      setTimeout(() => window.location.href = "index.html", 2000);
+    } else {
+      showToast("❌ Failed", data.message || "Verification failed", "fa-times", true);
+      btn.innerHTML = '<i class="fas fa-check-circle"></i> Verify & Activate Yearly';
+      btn.disabled = false;
+    }
+  } catch(err) {
+    console.error(err);
+    showToast("❌ Network Error", "Please try again later", "fa-times", true);
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Verify & Activate Yearly';
+    btn.disabled = false;
+  }
+}
+
+async function verifyPayment() {
+  const tid = document.getElementById('transactionId').value.trim();
+  const phone = document.getElementById('paymentPhone').value.trim();
+  
+  if(!tid || tid.length < 5) {
+    showToast("❌ Invalid TID", "Please enter valid Transaction ID", "fa-times", true);
+    return;
+  }
+  if(!phone || phone.length < 11) {
+    showToast("❌ Invalid Phone", "Please enter valid phone number", "fa-times", true);
+    return;
+  }
+
+  const btn = document.getElementById('verifyBtn');
+  btn.innerHTML = '<span class="loading"></span> Verifying...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/verify-payment`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sellerPhone: seller.phone,
+        transactionId: tid,
+        paymentPhone: phone,
+        method: 'easypaisa',
+        amount: 999
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.success) {
+      // Calculate 1 month from now
+      const now = new Date();
+      const expiresAt = new Date(now);
+      expiresAt.setMonth(expiresAt.getMonth() + 1);
+
+      const planData = {
+        type: 'premium',
+        activatedAt: now.toISOString(),
+        expiresAt: expiresAt.toISOString(),
+        adsUnlocked: true,
+        premiumBadge: true,
+        transactionId: tid
+      };
+      localStorage.setItem(`sellerPlan_${seller.phone}`, JSON.stringify(planData));
+
+      seller.plan = 'premium';
+      localStorage.setItem("seller", JSON.stringify(seller));
+
+      showToast("🎉 Premium Activated!", `Valid until ${expiresAt.toLocaleDateString()}`, "fa-crown");
+      setTimeout(() => window.location.href = "index.html", 2000);
+    } else {
+      showToast("❌ Failed", data.message || "Verification failed", "fa-times", true);
+      btn.innerHTML = '<i class="fas fa-check-circle"></i> Verify & Activate Premium';
+      btn.disabled = false;
+    }
+  } catch(err) {
+    console.error(err);
+    showToast("❌ Network Error", "Please try again later", "fa-times", true);
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Verify & Activate Premium';
+    btn.disabled = false;
+  }
+}
+
+function showToast(title, message, icon, isError) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${isError ? 'error' : ''}`;
+  toast.innerHTML = `
+    <div class="toast-icon"><i class="fas ${icon}"></i></div>
+    <div>
+      <div style="font-weight:700;color:${isError ? '#ef4444' : '#22c55e'};">${title}</div>
+      <div style="font-size:13px;color:#666;">${message}</div>
+    </div>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 5000);
+}
+
+// Click outside modal to close
+document.getElementById('paymentModal').addEventListener('click', function(e) {
+  if(e.target === this) closePaymentModal();
+});
+
+document.getElementById('yearlyPaymentModal').addEventListener('click', function(e) {
+  if(e.target === this) closeYearlyPaymentModal();
+});
+
+// Auto-apply dark mode
+(function() {
+  const isDark = localStorage.getItem("darkMode") === "true";
+  if (isDark) document.documentElement.setAttribute("data-theme", "dark");
+})();
+</script>
+
+</body>
+</html>

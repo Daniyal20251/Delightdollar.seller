@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seller Orders - Delightpk</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+
+/* ===== ROOT VARIABLES ===== */
+:root {
+  --bg-body: #f8f8f8;
+  --bg-card: #fff;
+  --bg-filter: #fff;
+  --bg-product-box: #fafafa;
+  --bg-address: #fff7ef;
+  --text-primary: #333;
+  --text-secondary: #555;
+  --text-heading: #fff;
+  --border-color: #ddd;
+  --shadow-card: 0 3px 8px rgba(0,0,0,0.1);
+  --bottom-bar-bg: #fff;
+  --bottom-bar-border: #f0f0f0;
+  --bottom-bar-text: #999;
+}
+
+/* ===== DARK MODE VARIABLES ===== */
+[data-theme="dark"] {
+  --bg-body: #0a0a1a;
+  --bg-card: #16162a;
+  --bg-filter: #1e1e3a;
+  --bg-product-box: #1a1a2e;
+  --bg-address: #1e1e3a;
+  --text-primary: #e8e8f0;
+  --text-secondary: #a0a0c0;
+  --text-heading: #fff;
+  --border-color: #2a2a4a;
+  --shadow-card: 0 4px 15px rgba(0,0,0,0.4);
+  --bottom-bar-bg: #16162a;
+  --bottom-bar-border: #2a2a4a;
+  --bottom-bar-text: #8888aa;
+}
+
+body { margin:0; font-family:'Poppins',sans-serif; background: var(--bg-body); padding-bottom:50px; transition: background 0.5s ease; }
+
+/* Header */
+header {
+  position:fixed; top:0; left:0; width:100%;
+  background:linear-gradient(135deg,#ff6a00,#ff3d00);
+  display:flex; align-items:center; justify-content:center;
+  height:65px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.15);
+  border-bottom-left-radius:35px; border-bottom-right-radius:35px;
+  z-index:10;
+}
+
+/* Filter Bar */
+.filter-bar { 
+  margin-top:70px; 
+  display:flex; 
+  overflow-x:auto; 
+  gap:10px; 
+  padding:10px; 
+  background: var(--bg-filter); 
+  box-shadow:0 2px 5px rgba(0,0,0,0.1); 
+  scrollbar-width:none; 
+  transition: background 0.4s ease;
+}
+.filter-bar::-webkit-scrollbar { display:none; }
+.filter-bar button { 
+  flex:0 0 auto; 
+  padding:8px 16px; 
+  border:none; 
+  border-radius:25px; 
+  background:#e0e0e0; 
+  font-weight:600; 
+  cursor:pointer; 
+  transition:0.3s; 
+  color: #333;
+}
+.filter-bar button.active { background:#ff6a00; color:#fff; }
+
+[data-theme="dark"] .filter-bar button { background: #2a2a4a; color: #e8e8f0; }
+[data-theme="dark"] .filter-bar button.active { background: #ff6a00; color: #fff; }
+
+/* Orders */
+.container { padding:15px; margin-top:10px; }
+.order-card { 
+  position:relative; 
+  background: var(--bg-card); 
+  padding:15px; 
+  margin-bottom:20px; 
+  border-radius:12px; 
+  box-shadow: var(--shadow-card); 
+  border-left:5px solid #ff6a00; 
+  transition:0.2s ease, background 0.4s ease; 
+}
+.order-card p { margin:6px 0; font-size:14px; color: var(--text-primary); transition: color 0.4s ease; }
+.product-box { 
+  display:flex; 
+  align-items:center; 
+  gap:12px; 
+  background: var(--bg-product-box); 
+  padding:10px; 
+  border-radius:10px; 
+  margin-top:10px; 
+  border:1px solid var(--border-color); 
+  cursor:pointer; 
+  transition:0.2s ease, background 0.4s ease, border-color 0.4s ease; 
+}
+.product-box img { width:70px; height:70px; object-fit:cover; border-radius:8px; border:1px solid var(--border-color); }
+.product-box p { color: var(--text-primary); }
+.buyer-info { 
+  margin-bottom:10px; 
+  padding-bottom:5px; 
+  border-bottom:1px solid var(--border-color); 
+  transition: border-color 0.4s ease;
+}
+.buyer-info p { color: var(--text-primary); }
+
+/* Status buttons & badges */
+.status-btns { display:flex; justify-content:space-between; margin-top:12px; gap:8px; flex-wrap:wrap; }
+.status-btns button { flex:1; padding:10px; border:none; border-radius:8px; font-weight:bold; color:#fff; cursor:pointer; font-size:13px; transition:0.2s; }
+.status-pending { background:#f0ad4e; }
+.status-shipped { background:#5bc0de; }
+.status-delivered { background:#5cb85c; }
+.status-cancelled { background:#d9534f; }
+.status-btns button.selected { box-shadow:0 0 0 3px rgba(0,0,0,0.15); pointer-events:none; opacity:0.7; }
+.status-btns button:hover { transform:scale(1.05); }
+
+/* Delivered/Cancelled badge top-right */
+.status-badge {
+  position: absolute;
+  top:10px;
+  right:15px;
+  padding:5px 10px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:bold;
+  color:white;
+}
+
+/* Address Box */
+.address-box { 
+  background: var(--bg-address); 
+  padding:10px 12px; 
+  border-left:4px solid #ff6a00; 
+  border-radius:8px; 
+  margin-top:10px; 
+  font-size:13.5px; 
+  color: var(--text-primary); 
+  line-height:1.5; 
+  transition: background 0.4s ease, color 0.4s ease;
+}
+.address-box strong { color:#ff6a00; }
+.address-box .heading { text-align:center; font-weight:600; font-size:14px; color: var(--text-primary); margin-bottom:5px; transition: color 0.4s ease; }
+
+/* Loading */
+#loading { text-align:center; margin-top:40px; color: var(--text-secondary); transition: color 0.4s ease; }
+
+/* ===== PROFESSIONAL BOTTOM BAR ===== */
+.bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--bottom-bar-bg);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0 12px;
+  z-index: 9999;
+  box-shadow: 0 -4px 14px rgba(0,0,0,0.08);
+  border-top: 1px solid var(--bottom-bar-border);
+  transition: all 0.4s ease;
+}
+
+.bar a {
+  text-decoration: none;
+  color: var(--bottom-bar-text);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 16px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.bar a i {
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+
+.bar a:hover {
+  color: #ef6c00;
+}
+
+.bar a.active {
+  color: #ef6c00;
+}
+
+.bar a.active::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 3px;
+  background: #ef6c00;
+  border-radius: 2px;
+}
+
+.bar a.active i {
+  transform: translateY(-2px);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h4 style="color: white;">My Orders</h4>
+</header>
+
+<div class="filter-bar" id="filterBar"></div>
+<div class="container" id="orderList">
+  <div id="loading">Loading orders...</div>
+</div>
+
+<div class="bar">
+  <a href="index.html"><i class="fas fa-user"></i>Profile</a>
+  <a href="myStore.html"><i class="fas fa-store"></i>Store</a>
+  <a href="sellerOrders.html" class="active"><i class="fas fa-box"></i>Orders
+    <span class="nav-badge" id="orderBadge" style="display:none;"></span>
+  </a>
+  <a href="sellerChat.html"><i class="fas fa-comments"></i>Chat
+    <span class="nav-badge" id="chatBadge" style="display:none;"></span>
+  </a>
+  <a href="Analytics.html"><i class="fas fa-chart-line"></i>Analytics</a>
+</div>
+<script>
+// ===== DARK MODE INIT =====
+(function() {
+  const isDark = localStorage.getItem("darkMode") === "true";
+  if (isDark) document.documentElement.setAttribute("data-theme", "dark");
+})();
+
+const seller = JSON.parse(localStorage.getItem("seller"));
+if(!seller){ alert("Please login first!"); window.location.href="login.html"; }
+
+const statuses = ["Pending","Shipped","Delivered","Cancelled"];
+let currentFilter = "Pending";
+
+const filterBar = document.getElementById("filterBar");
+statuses.forEach(status => {
+  const btn = document.createElement("button");
+  btn.innerText = status;
+  if(status === currentFilter) btn.classList.add("active");
+  btn.onclick = () => { currentFilter = status; updateFilterButtons(); loadOrders(); };
+  filterBar.appendChild(btn);
+});
+
+function updateFilterButtons(){
+  Array.from(filterBar.children).forEach(btn=>{
+    btn.classList.remove("active");
+    if(btn.innerText === currentFilter) btn.classList.add("active");
+  });
+}
+
+async function loadOrders(){
+  const container = document.getElementById("orderList");
+  container.innerHTML = "<div id='loading'>Loading...</div>";
+  try{
+    const res = await fetch(`https://delight-backend--araindaniyalo2.replit.app/seller-orders/${seller.phone}`);
+    let orders = await res.json();
+    if(!orders || orders.length===0){ container.innerHTML="<p style='text-align:center;color:var(--text-secondary);'>📭 No orders yet</p>"; return; }
+
+    // Sort by most recent first
+    orders.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+
+    let filteredOrders = orders.filter(o => o.status === currentFilter);
+    container.innerHTML = "";
+    filteredOrders.forEach(order => {
+      const div = document.createElement("div"); div.className = "order-card";
+      const product = order.product || {};
+      const imgUrl = product.image || (product.images?.[0] || "no-img.jpg");
+
+      const buyerDiv = document.createElement("div"); buyerDiv.className = "buyer-info";
+      buyerDiv.innerHTML = `<p><strong>Buyer:</strong> ${order.buyerName || "N/A"}</p>
+                            <p><strong>Phone:</strong> ${order.buyerPhone || "N/A"}</p>`;
+      div.appendChild(buyerDiv);
+
+      const productBox = document.createElement("div"); productBox.className = "product-box";
+      productBox.innerHTML = `<img src="${imgUrl}" alt="Product">
+                              <div><p><strong>${product.title || "Unknown Product"}</strong></p>
+                              <p>Price: Rs ${product.price || "N/A"}</p></div>`;
+      productBox.onclick = ()=>{ localStorage.setItem("selectedItem",JSON.stringify(product)); window.location.href="itemDetails.html"; };
+      div.appendChild(productBox);
+
+      if(order.address){
+        const parts = order.address.split(',').map(p=>p.trim());
+        let addrHTML = `<div class="heading">Address Details</div>`;
+        if(parts[0]) addrHTML += `<div>Province: <strong>${parts[0]}</strong></div>`;
+        if(parts[1]) addrHTML += `<div>City: <strong>${parts[1]}</strong></div>`;
+        if(parts[2]) addrHTML += `<div>Zone/Area: <strong>${parts[2]}</strong></div>`;
+        if(parts[3]) addrHTML += `<div>Full Address: <strong>${parts.slice(3).join(', ')}</strong></div>`;
+        const addrDiv = document.createElement("div"); addrDiv.className = "address-box"; addrDiv.innerHTML = addrHTML;
+        div.appendChild(addrDiv);
+      }
+
+      if(order.status === "Pending" || order.status === "Shipped"){
+          const statusDiv = document.createElement("div"); 
+          statusDiv.className = "status-btns";
+          ["Pending","Shipped","Delivered","Cancelled"].forEach(s=>{
+              const btn = document.createElement("button");
+              btn.className = `status-${s.toLowerCase()}`;
+              btn.innerText = s;
+              if(order.status === s) btn.classList.add("selected");
+
+              btn.onclick = async ()=>{
+                  if(order.status !== s){
+                      try{
+                          const res = await fetch(`https://delight-backend--araindaniyalo2.replit.app/update-order/${order.id}`,{
+                              method:"PUT",
+                              headers:{"Content-Type":"application/json"},
+                              body:JSON.stringify({status:s})
+                          });
+                          const data = await res.json();
+                          if(data.success){
+                              order.status = s;
+                              Array.from(statusDiv.children).forEach(b=>b.classList.remove("selected"));
+                              btn.classList.add("selected");
+                          } else alert("Failed to update status!");
+                      }catch(err){ console.error(err); alert("Server error!"); }
+                  }
+              };
+              statusDiv.appendChild(btn);
+          });
+          div.appendChild(statusDiv);
+      } else {
+          const badge = document.createElement("div");
+          badge.className = `status-badge status-${order.status.toLowerCase()}`;
+          badge.innerText = order.status;
+          div.appendChild(badge);
+      }
+
+      container.appendChild(div);
+    });
+  }catch(err){ console.error(err); container.innerHTML="<p style='text-align:center;color:red;'>Error loading orders.</p>"; }
+}
+
+window.onload = loadOrders;
+
+  const page = location.pathname.split("/").pop();
+
+  if(page === "myStore.html") {
+    document.getElementById("nav-store")?.classList.add("active");
+  }
+  if(page === "sellerOrders.html") {
+    document.getElementById("nav-orders")?.classList.add("active");
+  }
+  if(page === "index.html") {
+    document.getElementById("nav-profile")?.classList.add("active");
+  }
+</script>
+
+</body>
+</html>

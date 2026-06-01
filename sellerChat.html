@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <title>Customer Chats — Delight.pk</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --accent: #ef6c00;
+  --accent2: #ff9800;
+  --bg: #f5f6fa;
+  --card: #ffffff;
+  --text: #111827;
+  --text-2: #6b7280;
+  --border: #e5e7eb;
+  --bar-bg: #ffffff;
+  --bar-border: #f0f0f0;
+  --unread-bg: #fff7ed;
+  --unread-border: #fed7aa;
+  --header-from: #ef6c00;
+  --header-to: #ff8f00;
+  --avatar-from: #ef6c00;
+  --avatar-to: #ff9800;
+  --search-bg: #f0f2f7;
+  --search-text: #374151;
+  --empty-icon: #d1d5db;
+  --empty-text: #9ca3af;
+  --skeleton-bg: #e5e7eb;
+  --skeleton-shimmer: #f3f4f6;
+}
+
+[data-theme="dark"] {
+  --bg: #0c0c1e;
+  --card: #16162a;
+  --text: #f1f5f9;
+  --text-2: #94a3b8;
+  --border: #1e2040;
+  --bar-bg: rgba(12,12,30,0.97);
+  --bar-border: #1e2040;
+  --unread-bg: #1a1520;
+  --unread-border: #7c3aed33;
+  --header-from: #1a0a00;
+  --header-to: #2d1100;
+  --search-bg: #1e2040;
+  --search-text: #cbd5e1;
+  --empty-icon: #374151;
+  --empty-text: #6b7280;
+  --skeleton-bg: #1e2040;
+  --skeleton-shimmer: #2a2a4a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ===== HEADER ===== */
+.page-header {
+  position: sticky;
+  top: 0; z-index: 100;
+  background: linear-gradient(135deg, var(--header-from), var(--header-to));
+  padding: 0 16px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 4px 20px rgba(239,108,0,0.2);
+}
+
+[data-theme="dark"] .page-header {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.back-btn {
+  width: 38px; height: 38px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.back-btn:active { background: rgba(255,255,255,0.3); }
+
+.header-title-group { flex: 1; min-width: 0; }
+.header-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.3px;
+}
+.header-subtitle {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 1px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-icon-btn {
+  width: 38px; height: 38px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.header-icon-btn:active { background: rgba(255,255,255,0.25); }
+
+/* ===== SEARCH BAR ===== */
+.search-bar-wrap {
+  padding: 12px 16px 8px;
+  background: var(--bg);
+  position: sticky;
+  top: 64px;
+  z-index: 90;
+  transition: background 0.3s;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--search-bg);
+  border-radius: 14px;
+  padding: 0 14px;
+  height: 42px;
+  border: 1.5px solid transparent;
+  transition: border-color 0.2s, background 0.3s;
+}
+.search-bar:focus-within {
+  border-color: var(--accent);
+  background: var(--card);
+}
+
+.search-bar i {
+  font-size: 14px;
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--search-text);
+}
+.search-bar input::placeholder { color: var(--text-2); }
+
+/* ===== FILTER TABS ===== */
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.filter-tabs::-webkit-scrollbar { display: none; }
+
+.filter-tab {
+  flex-shrink: 0;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.filter-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: 0 3px 10px rgba(239,108,0,0.3);
+}
+
+/* ===== CHAT LIST ===== */
+.chat-list {
+  padding: 4px 12px 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===== CHAT THREAD CARD ===== */
+.chat-thread {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.chat-thread::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: transparent;
+  border-radius: 0 2px 2px 0;
+  transition: background 0.2s;
+}
+
+.chat-thread.unread {
+  background: var(--unread-bg);
+  border-color: var(--unread-border);
+}
+
+.chat-thread.unread::before { background: var(--accent); }
+
+.chat-thread:active {
+  transform: scale(0.98);
+}
+
+/* Avatar */
+.thread-avatar {
+  width: 50px; height: 50px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--avatar-from), var(--avatar-to));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  flex-shrink: 0;
+  letter-spacing: -1px;
+  box-shadow: 0 3px 10px rgba(239,108,0,0.25);
+  overflow: hidden;
+}
+
+.thread-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+.thread-avatar.no-img {
+  /* fallback gradient stays */
+}
+
+.online-dot {
+  position: absolute;
+  bottom: 2px; right: 2px;
+  width: 10px; height: 10px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid var(--card);
+}
+
+.avatar-wrap { position: relative; flex-shrink: 0; }
+
+/* Thread info */
+.thread-info { flex: 1; min-width: 0; }
+
+.thread-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.thread-preview {
+  font-size: 12.5px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-thread.unread .thread-preview {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Thread meta */
+.thread-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.thread-time {
+  font-size: 10.5px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.unread-badge {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+  box-shadow: 0 2px 6px rgba(239,68,68,0.35);
+  animation: badgePop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes badgePop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.thread-product-badge {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ===== PRODUCT THUMBNAIL ===== */
+.thread-product-img {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+  gap: 12px;
+  animation: fadeIn 0.4s ease;
+}
+
+.empty-icon {
+  width: 80px; height: 80px;
+  background: var(--search-bg);
+  border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  color: var(--empty-icon);
+  margin-bottom: 4px;
+}
+
+.empty-state h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+.empty-state p {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.6;
+  max-width: 260px;
+}
+
+/* ===== SKELETON LOADER ===== */
+.skeleton-list { padding: 4px 12px; display: flex; flex-direction: column; gap: 8px; }
+
+.skeleton-card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1.5px solid var(--border);
+}
+
+.skeleton-avatar {
+  width: 50px; height: 50px;
+  border-radius: 16px;
+  background: var(--skeleton-bg);
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.skeleton-lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+.skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--skeleton-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-line:nth-child(1) { width: 55%; }
+.skeleton-line:nth-child(2) { width: 80%; }
+
+.skeleton-avatar::after,
+.skeleton-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--skeleton-shimmer), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* ===== SECTION LABEL ===== */
+.section-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-2);
+  padding: 4px 4px 8px;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: var(--bar-bg);
+  border-top: 1px solid var(--bar-border);
+  padding: 6px 0 10px;
+  z-index: 9999;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.07);
+  backdrop-filter: blur(12px);
+}
+
+.bar a {
+  position: relative;
+  text-decoration: none;
+  color: var(--text-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 12px 2px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 14px;
+  transition: color 0.2s;
+}
+.bar a i { font-size: 21px; transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+.bar a:hover { color: var(--accent); }
+.bar a:hover i { transform: translateY(-2px); }
+.bar a.active { color: var(--accent); }
+.bar a.active i { transform: translateY(-3px); }
+.bar a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; left: 50%;
+  transform: translateX(-50%);
+  width: 20px; height: 3px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+}
+
+.nav-badge {
+  position: absolute;
+  top: 0; right: 4px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
+  min-width: 16px; height: 16px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--bar-bg);
+  box-shadow: 0 2px 6px rgba(239,68,68,0.4);
+}
+</style>
+</head>
+<body>
+<!-- Header -->
+<div class="page-header">
+  <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+  <div class="header-title-group">
+    <div class="header-title">Customer Chats</div>
+    <div class="header-subtitle" id="headerSubtitle">Loading...</div>
+  </div>
+  <div class="header-actions">
+    <!-- ✅ Live unread message counter -->
+    <div style="position:relative; display:flex; align-items:center;">
+      <button class="header-icon-btn" onclick="loadChatThreads()" title="Refresh">
+        <i class="fas fa-rotate-right"></i>
+      </button>
+      <span id="msgCounterBadge" style="
+        display:none;
+        position:absolute;
+        top:-4px; right:-4px;
+        background:linear-gradient(135deg,#ef4444,#dc2626);
+        color:white;
+        font-size:9px;
+        font-weight:800;
+        min-width:16px; height:16px;
+        border-radius:10px;
+        align-items:center; justify-content:center;
+        padding:0 4px;
+        border:2px solid var(--header-to);
+        box-shadow:0 2px 6px rgba(239,68,68,0.5);
+        z-index:10;
+        pointer-events:none;
+      "></span>
+    </div>
+  </div>
+</div>
+
+<!-- Search -->
+<div class="search-bar-wrap">
+  <div class="search-bar">
+    <i class="fas fa-magnifying-glass"></i>
+    <input type="text" id="searchInput" placeholder="Search conversations..." oninput="filterThreads(this.value)">
+  </div>
+</div>
+
+<!-- Filter Tabs -->
+<div class="filter-tabs">
+  <button class="filter-tab active" onclick="setFilter('all', this)">All</button>
+  <button class="filter-tab" onclick="setFilter('unread', this)">Unread</button>
+  <button class="filter-tab" onclick="setFilter('read', this)">Read</button>
+</div>
+
+<!-- Chat List -->
+<div class="chat-list" id="chatList">
+  <!-- Skeleton -->
+  <div class="skeleton-list" id="skeletonList">
+    <div class="section-label">Recent</div>
+    <div class="skeleton-card">
+      <div class="skeleton-avatar"></div>
+      <div class="skeleton-lines">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bar">
+  <a href="index.html"><i class="fas fa-user"></i>Profile</a>
+  <a href="myStore.html"><i class="fas fa-store"></i>Store</a>
+  <a href="sellerOrders.html"><i class="fas fa-box"></i>Orders</a>
+  <a href="sellerChat.html" class="active"><i class="fas fa-comments"></i>Chat
+    <span class="nav-badge" id="chatBadge" style="display:none;"></span>
+  </a>
+  <a href="Analytics.html"><i class="fas fa-chart-line"></i>Analytics</a>
+</div>
+
+<script>
+const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
+
+// ===== SELLER AUTH =====
+function getSeller() {
+  try {
+    const raw = localStorage.getItem("seller");
+    if (!raw) return null;
+    const p = JSON.parse(raw);
+    return p && p.phone ? p : null;
+  } catch(e) { return null; }
+}
+
+const seller = getSeller();
+if (!seller) {
+  console.error("[SellerChat] No seller found, redirecting to login");
+  window.location.href = "login.html";
+} else {
+  console.log("[SellerChat] Seller loaded:", seller.phone);
+}
+
+// ===== THREAD STATE =====
+let allThreads = [];
+let currentFilter = 'all';
+let prevTotalUnread = 0;  // Track previous unread count for new message detection
+
+// ===== LOAD THREADS =====
+async function loadChatThreads() {
+  try {
+    console.log("[SellerChat] Fetching threads for:", seller.phone);
+    const res = await fetch(`${API_BASE}/seller/chat/${seller.phone}`);
+    if (!res.ok) {
+      console.error("[SellerChat] HTTP error:", res.status, res.statusText);
+      throw new Error(`HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    console.log("[SellerChat] API Response:", data);
+
+    document.getElementById("skeletonList")?.remove();
+
+    if (!data.success || !data.threads || data.threads.length === 0) {
+      allThreads = [];
+      renderThreads([]);
+      document.getElementById("headerSubtitle").textContent = "No conversations yet";
+      return;
+    }
+
+    // Normalize backend data - handle different field names
+    // ✅ FIX: Filter only threads belonging to THIS seller
+    const rawThreads = (data.threads || []).map(t => ({
+      threadId: t.threadId || t._id || t.id || t.thread_id,
+      buyerPhone: t.buyerPhone || t.buyer || t.buyer_phone || t.buyerId || "",
+      sellerPhone: t.sellerPhone || t.seller || t.seller_phone || "",
+      productId: t.productId || t.product_id || t.product || null,
+      lastMessage: t.lastMessage || t.last_message || t.latestMessage || null,
+      unreadCount: t.unreadCount || t.unread || t.unread_count || 0,
+      createdAt: t.createdAt || t.created_at || t.timestamp,
+      ...t
+    }));
+
+    // ✅ Only show threads where sellerPhone matches current seller
+    allThreads = rawThreads.filter(t => {
+      const tSeller = (t.sellerPhone || "").replace(/\D/g, "");
+      const mySeller = (seller.phone || "").replace(/\D/g, "");
+      return tSeller === mySeller || tSeller === "" || !t.sellerPhone;
+    });
+
+    console.log("[SellerChat] Filtered threads:", allThreads.length, "of", rawThreads.length);
+
+    const unreadCount = allThreads.filter(t => t.unreadCount > 0).length;
+    document.getElementById("headerSubtitle").textContent =
+      unreadCount > 0 ? `${unreadCount} unread conversation${unreadCount > 1 ? 's' : ''}` :
+      `${allThreads.length} conversation${allThreads.length !== 1 ? 's' : ''}`;
+
+    renderThreads(filterByTab(allThreads));
+
+    // ✅ Update nav badge + message counter in header
+    const totalUnread = allThreads.reduce((s, t) => s + (t.unreadCount || 0), 0);
+    updateBadges(totalUnread, prevTotalUnread);
+
+  } catch(err) {
+    console.error("[SellerChat] Load threads error:", err);
+    document.getElementById("skeletonList")?.remove();
+    document.getElementById("chatList").innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon"><i class="fas fa-wifi-slash"></i></div>
+        <h3>Connection Error</h3>
+        <p>Could not load conversations. Check your internet and try again.</p>
+      </div>`;
+  }
+}
+
+// ✅ Flash page title for new messages
+let flashInterval = null;
+function flashTitle(msg) {
+  const original = "Customer Chats — Delight.pk";
+  let on = true;
+  if (flashInterval) clearInterval(flashInterval);
+  flashInterval = setInterval(() => {
+    document.title = on ? msg : original;
+    on = !on;
+  }, 900);
+  setTimeout(() => {
+    clearInterval(flashInterval);
+    flashInterval = null;
+    document.title = original;
+  }, 6000);
+}
+
+function filterByTab(threads) {
+  if (currentFilter === 'unread') return threads.filter(t => t.unreadCount > 0);
+  if (currentFilter === 'read') return threads.filter(t => !t.unreadCount);
+  return threads;
+}
+
+function filterThreads(query) {
+  const q = query.toLowerCase().trim();
+  const base = filterByTab(allThreads);
+  if (!q) { renderThreads(base); return; }
+  renderThreads(base.filter(t => {
+    const phone = (t.buyerPhone || '').toLowerCase();
+    const msg = (t.lastMessage?.message || '').toLowerCase();
+    return phone.includes(q) || msg.includes(q);
+  }));
+}
+
+function setFilter(tab, btn) {
+  currentFilter = tab;
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterThreads(document.getElementById("searchInput").value);
+}
+
+function renderThreads(threads) {
+  const container = document.getElementById("chatList");
+  console.log("[SellerChat] Rendering threads:", threads ? threads.length : 0, threads);
+
+  if (!threads || !threads.length) {
+    const emptyMsg = currentFilter === 'unread' ? "No unread messages" :
+                     currentFilter === 'read' ? "No read conversations" : "No conversations yet";
+    container.innerHTML = `
+      <div class="empty-state" style="animation:fadeIn 0.4s ease;">
+        <div class="empty-icon"><i class="fas fa-comments"></i></div>
+        <h3>${emptyMsg}</h3>
+        <p>When customers message you, their conversations will appear here.</p>
+      </div>`;
+    return;
+  }
+
+  // Sort: unread first, then by time
+  const sorted = [...threads].sort((a, b) => {
+    if ((b.unreadCount > 0) !== (a.unreadCount > 0)) return (b.unreadCount > 0) ? 1 : -1;
+    const ta = new Date(a.lastMessage?.createdAt || 0);
+    const tb = new Date(b.lastMessage?.createdAt || 0);
+    return tb - ta;
+  });
+
+  const unreadThreads = sorted.filter(t => t.unreadCount > 0);
+  const readThreads = sorted.filter(t => !t.unreadCount);
+
+  let html = '';
+
+  if (unreadThreads.length) {
+    html += `<div class="section-label">Unread</div>`;
+    html += unreadThreads.map(t => threadHTML(t)).join('');
+  }
+
+  if (readThreads.length) {
+    html += `<div class="section-label" style="margin-top:${unreadThreads.length ? '8px' : '0'};">Recent</div>`;
+    html += readThreads.map(t => threadHTML(t)).join('');
+  }
+
+  container.innerHTML = html;
+
+  // Bind clicks
+  container.querySelectorAll('.chat-thread').forEach(el => {
+    el.addEventListener('click', () => openChat(el.dataset.threadId));
+  });
+}
+
+function maskPhone(phone) {
+  const p = String(phone || '').trim();
+  if (p.length >= 4) return p.slice(0, -3) + 'XXX';
+  return p;
+}
+
+function threadHTML(thread) {
+  const isUnread = thread.unreadCount > 0;
+  const lastMsg  = thread.lastMessage;
+  const phone    = thread.buyerPhone || '';
+  // ✅ Masked phone: e.g. "03133196XXX"
+  const maskedPhone = maskPhone(phone);
+  // Avatar: product image if available, else last 4 digits
+  const avatarText = phone.length >= 4 ? phone.slice(-4) : phone;
+  const pi = thread.productInfo;
+  const productImg = pi?.image || null;
+
+  let avatarHtml = '';
+  if (productImg) {
+    avatarHtml = `<div class="thread-avatar">
+      <img src="${escapeHtml(productImg)}" alt="product" onerror="this.parentElement.classList.add('no-img');this.remove();this.parentElement.textContent='${avatarText}'">
+    </div>`;
+  } else {
+    avatarHtml = `<div class="thread-avatar no-img">${avatarText}</div>`;
+  }
+
+  let time = '';
+  if (lastMsg?.createdAt) {
+    const d = new Date(lastMsg.createdAt);
+    const now = new Date();
+    const diffDays = Math.floor((now - d) / 86400000);
+    if (diffDays === 0) time = d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:true});
+    else if (diffDays === 1) time = 'Yesterday';
+    else if (diffDays < 7)  time = d.toLocaleDateString([], {weekday:'short'});
+    else                    time = d.toLocaleDateString([], {day:'2-digit', month:'short'});
+  }
+
+  const msgPreview = lastMsg
+    ? (lastMsg.images?.length ? '📷 Photo' : escapeHtml(lastMsg.message || ''))
+    : 'No messages yet';
+
+  // ✅ productInfo comes from backend: { id, title, image, price }
+  let productBadge = '';
+  if (pi && pi.title) {
+    productBadge = `<div class="thread-product-badge">📦 ${escapeHtml(pi.title)}</div>`;
+  }
+
+  return `
+    <div class="chat-thread ${isUnread ? 'unread' : ''}" data-thread-id="${thread.threadId}" style="animation:fadeIn 0.3s ease;">
+      <div class="avatar-wrap">
+        ${avatarHtml}
+      </div>
+      <div class="thread-info">
+        <div class="thread-name">${maskedPhone}</div>
+        ${productBadge}
+        <div class="thread-preview">${msgPreview}</div>
+      </div>
+      <div class="thread-meta">
+        <span class="thread-time">${time}</span>
+        ${isUnread ? `<span class="unread-badge">${thread.unreadCount > 99 ? '99+' : thread.unreadCount}</span>` : ''}
+      </div>
+    </div>`;
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+async function openChat(threadId) {
+  const thread = allThreads.find(t => String(t.threadId) === String(threadId));
+  let url = "Delight Chat.html?thread=" + threadId + "&mode=seller";
+  if (thread) {
+    if (thread.buyerPhone) url += "&buyer=" + encodeURIComponent(thread.buyerPhone);
+    const pId = thread.productInfo?.id || thread.productId;
+    if (pId) url += "&productId=" + encodeURIComponent(pId);
+  }
+  localStorage.setItem("currentThreadId", threadId);
+
+  // ✅ Mark messages as read before opening chat
+  try {
+    await fetch(API_BASE + "/chat/read/" + threadId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: seller.phone })
+    });
+    // Update local state instantly so badge resets without waiting for next poll
+    const t = allThreads.find(t => String(t.threadId) === String(threadId));
+    if (t) t.unreadCount = 0;
+    const totalUnread = allThreads.reduce((s, t) => s + (t.unreadCount || 0), 0);
+    updateBadges(totalUnread, prevTotalUnread);
+  } catch(e) { /* silent - still open chat */ }
+
+  window.location.href = url;
+}
+
+function goBack() {
+  window.location.href = "index.html";
+}
+
+// ===== SMART BACKGROUND POLLING =====
+// Only re-render if unread counts or thread list actually changed
+// No full page re-render = no flicker / auto-refresh feel
+let pollingTimer = null;
+
+async function backgroundPoll() {
+  try {
+    const res = await fetch(`${API_BASE}/seller/chat/${seller.phone}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.success || !data.threads) return;
+
+    const rawThreads = (data.threads || []).map(t => ({
+      threadId: t.threadId || t._id || t.id || t.thread_id,
+      buyerPhone: t.buyerPhone || t.buyer || t.buyer_phone || t.buyerId || "",
+      sellerPhone: t.sellerPhone || t.seller || t.seller_phone || "",
+      productId: t.productId || t.product_id || t.product || null,
+      lastMessage: t.lastMessage || t.last_message || t.latestMessage || null,
+      unreadCount: t.unreadCount || t.unread || t.unread_count || 0,
+      createdAt: t.createdAt || t.created_at || t.timestamp,
+      ...t
+    }));
+
+    const filtered = rawThreads.filter(t => {
+      const tSeller = (t.sellerPhone || "").replace(/\D/g, "");
+      const mySeller = (seller.phone || "").replace(/\D/g, "");
+      return tSeller === mySeller || tSeller === "" || !t.sellerPhone;
+    });
+
+    const totalUnread = filtered.reduce((s, t) => s + (t.unreadCount || 0), 0);
+    const prevUnread  = allThreads.reduce((s, t) => s + (t.unreadCount || 0), 0);
+
+    // Check if anything changed (new message or thread count diff)
+    const threadCountChanged = filtered.length !== allThreads.length;
+    const unreadChanged = totalUnread !== prevUnread;
+
+    // Check if any thread has new lastMessage timestamp
+    let msgChanged = false;
+    for (const t of filtered) {
+      const old = allThreads.find(o => String(o.threadId) === String(t.threadId));
+      const newTs = t.lastMessage?.createdAt;
+      const oldTs = old?.lastMessage?.createdAt;
+      if (newTs !== oldTs) { msgChanged = true; break; }
+    }
+
+    if (!threadCountChanged && !unreadChanged && !msgChanged) return; // nothing changed, skip re-render
+
+    // Update state
+    allThreads = filtered;
+
+    // Update badges silently
+    updateBadges(totalUnread, prevUnread);
+
+    // Update subtitle
+    const unreadCount = filtered.filter(t => t.unreadCount > 0).length;
+    document.getElementById("headerSubtitle").textContent =
+      unreadCount > 0 ? `${unreadCount} unread conversation${unreadCount > 1 ? 's' : ''}` :
+      `${filtered.length} conversation${filtered.length !== 1 ? 's' : ''}`;
+
+    // Re-render only if needed
+    renderThreads(filterByTab(allThreads));
+
+  } catch(e) { /* silent fail in background */ }
+}
+
+function updateBadges(totalUnread, prevUnread) {
+  // Nav badge (bottom bar)
+  const badge = document.getElementById("chatBadge");
+  if (badge) {
+    badge.textContent = totalUnread > 99 ? "99+" : totalUnread;
+    badge.style.display = totalUnread > 0 ? "flex" : "none";
+  }
+  // Header counter badge
+  const counterEl = document.getElementById("msgCounterBadge");
+  if (counterEl) {
+    counterEl.textContent = totalUnread > 99 ? "99+" : totalUnread;
+    counterEl.style.display = totalUnread > 0 ? "flex" : "none";
+  }
+  // New message notification
+  if (totalUnread > prevUnread && prevUnread >= 0) {
+    const newCount = totalUnread - prevUnread;
+    if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
+    flashTitle(`📩 ${newCount} New Message${newCount > 1 ? 's' : ''}!`);
+  }
+  prevTotalUnread = totalUnread;
+}
+
+// ===== INIT =====
+loadChatThreads();
+// Smart poll every 5s — only re-renders if data actually changed (no flicker)
+pollingTimer = setInterval(backgroundPoll, 5000);
+</script>
+  <script>
+  (function() {
+    const stored = localStorage.getItem("darkMode");
+    const isDark = stored === null ? true : stored === "true";
+    if (isDark) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+  })();
+  </script>
+</body>
+</html>

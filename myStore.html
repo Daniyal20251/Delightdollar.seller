@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Store - Delightpk</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+:root {
+  --bg-body: #e0e0e0;
+  --bg-card: #fff;
+  --bg-input: #fafafa;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --text-heading: #ef6c00;
+  --border-color: #ddd;
+  --shadow-card: 0 4px 14px rgba(0,0,0,0.1);
+  --bottom-bar-bg: #fff;
+  --bottom-bar-border: #f0f0f0;
+  --bottom-bar-text: #999;
+}
+
+[data-theme="dark"] {
+  --bg-body: #0a0a1a;
+  --bg-card: #16162a;
+  --bg-input: #1e1e3a;
+  --text-primary: #e8e8f0;
+  --text-secondary: #a0a0c0;
+  --text-heading: #ff8c00;
+  --border-color: #2a2a4a;
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.5);
+  --bottom-bar-bg: #16162a;
+  --bottom-bar-border: #2a2a4a;
+  --bottom-bar-text: #8888aa;
+}
+
+/* Smooth transitions for all theme changes */
+* {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* ===== DARK MODE TOGGLE BUTTON ===== */
+.theme-switch-wrapper {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 100000;
+}
+
+.theme-switch {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ff9800, #ef6c00);
+  box-shadow: 0 2px 12px rgba(239,108,0,0.35);
+  transition: all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  border: none;
+}
+
+.theme-switch .knob {
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: transform 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+[data-theme="dark"] .theme-switch {
+  background: linear-gradient(135deg, #4c1d95, #7c3aed);
+  box-shadow: 0 2px 12px rgba(124,58,237,0.4);
+}
+
+[data-theme="dark"] .theme-switch .knob {
+  transform: translateX(24px);
+  background: #1e1b4b;
+}
+
+body {
+    font-family: sans-serif;
+    padding-top: 25px;
+    color: var(--text-primary);
+    background-color: var(--bg-body);
+    padding-bottom: 56px;
+    margin-top: 60px;
+  }
+
+  /* ===== PROFESSIONAL BOTTOM BAR ===== */
+  .bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--bottom-bar-bg);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0 12px;
+    z-index: 9999;
+    box-shadow: 0 -4px 14px rgba(0,0,0,0.08);
+    border-top: 1px solid var(--bottom-bar-border);
+  }
+
+  .bar a {
+    text-decoration: none;
+    color: var(--bottom-bar-text);
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 16px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .bar a i {
+    font-size: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .bar a:hover {
+    color: var(--text-heading);
+  }
+
+  .bar a.active {
+    color: var(--text-heading);
+  }
+
+  .bar a.active::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 3px;
+    background: var(--text-heading);
+    border-radius: 2px;
+  }
+
+  .bar a.active i {
+    transform: translateY(-2px);
+  }
+
+  /* Header */
+  header h2 {
+    color: white;
+    background: linear-gradient(45deg, #f4511e, #ffa726);
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 28px 28px 28px 70px;
+    margin: 0;
+    z-index: 9998;
+  }
+
+  /* Logo */
+  .logo1 {
+    position: fixed;
+    top: 0;
+    z-index: 9998;
+    margin-top: 17px;
+    margin-left: 10px;
+    background: white;
+    border-radius: 50%;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 4px rgba(0,0,0,0.15);
+  }
+
+  .logo1 img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  /* Product Container Grid */
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
+    margin-top: 10px;
+  }
+
+  /* Product Card */
+  .item-card {
+    position: relative;
+    cursor: pointer;
+    width: 48%;
+    height: 250px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+  }
+
+  .item-card:hover { transform: scale(1.02); }
+
+  .item-card img {
+    width: 100%;
+    height: 148px;
+    object-fit: contain;
+    margin-bottom: 3px;
+  }
+
+  /* Title */
+  .item-card h3 {
+    font-size: 11px;
+    padding-left: 4px;
+    font-weight: normal;
+    color: var(--text-primary);
+    margin: 3px 0 0 4px;
+    text-transform: capitalize;
+  }
+
+  /* Price Section */
+  .price-wrapper {
+    margin-left: 9px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .new-price {
+    font-weight: bold;
+    color: var(--text-heading);
+    display: flex;
+    align-items: baseline;
+    margin: 0;
+    gap: 2px;
+  }
+
+  .new-price strong {
+    font-size: 17px;
+  }
+
+  .old-price {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: line-through;
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    margin-left: 4px;
+  }
+
+  /* Delete Button */
+  .delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #ff4d4f;
+    border: none;
+    color: white;
+    font-size: 12px;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: 0.3s;
+  }
+
+  .delete-btn:hover { background: #d9363e; }
+
+  .search {
+  position: fixed;
+  padding-left: 5px;
+  right: 0;
+  top: 0;
+  margin-top: 26px;
+  margin-right: 25px;
+  height: 30px;
+  border: none;
+  border-radius: 20px;
+  width: 20px;
+  transition: width 2s;
+  z-index: 9998;
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.search:hover {
+  width: 307px;
+}
+
+.btn {
+  position: fixed;
+  right: 0;
+  margin-right: 30px;
+  top: 0;
+  margin-top: 61px;
+  border: none;
+  border-radius: 20px;
+  border: 2px solid white;
+  background-color: var(--text-heading);
+  color: white;
+  width: 70px;
+  z-index: 9998;
+}
+ .search-panel {
+  position: fixed;
+  top: 85px;
+  left: 0;
+  width: 100%;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 9999;
+  display: none;
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-panel.active {
+  display: block;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clear-btn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 17px;
+}
+
+.recent-title {
+  font-weight: bold;
+  color: var(--text-heading);
+  margin: 0;
+}
+
+#recentSearches li {
+  list-style: none;
+  padding: 8px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 70px;
+  color: var(--text-primary);
+}
+
+#recentSearches li:hover {
+  background: var(--bg-input);
+}
+.suggestions {
+  margin-top: 10px;
+}
+
+.suggestions span {
+  display: inline-block;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: 20px;
+  margin: 5px 5px 0 0;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.suggestions span:hover {
+  background: var(--border-color);
+}
+.not-found {
+      text-align: center;
+      margin-top: 50px;
+      color: var(--text-secondary);
+    }
+    .not-found img {
+      width: 180px;
+      max-width: 80%;
+      margin-top: 15px;
+      opacity: 0.9;
+    }
+    .not-found h3 {
+      margin: 8px 0 5px;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .not-found p {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+    /* Views Badge */
+    .views-badge {
+      position: absolute;
+      top: 6px; left: 6px;
+      background: rgba(0,0,0,0.65);
+      color: #fff;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 2;
+    }
+    .views-badge i { font-size: 10px; color: #ffecb3; }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2 id="sellerName">DELIGHT.PK</h2>
+  </header>
+
+  <div class="logo1">
+    <img id="sellerLogo" src="lo.png" alt="Seller Logo">
+  </div>
+
+  <div class="search-wrap">
+    <input type="text" id="searchInput" class="search" placeholder="🔍 Search products...">
+    <button onclick="searchItems()" class="btn">Search</button>
+  </div>
+
+  <div id="searchPanel" class="search-panel">
+    <div class="panel-header">
+      <p class="recent-title">Recent Searches</p>
+      <button id="clearHistoryBtn" class="clear-btn">Clear</button>
+    </div>
+    <ul id="recentSearches"></ul>
+    <div class="suggestions">
+      <span onclick="fillAndSearch('Tripod')">Tripod Stand</span>
+      <span onclick="fillAndSearch('Wall Clock')">Wall Clock</span>
+      <span onclick="fillAndSearch('Gripper')">Gripper</span>
+      <span onclick="fillAndSearch('Smart Watch')">Smart Watch</span>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">Loading products...</div>
+
+  <div id="itemContainer" class="container"></div>
+
+<div class="bar">
+  <a href="index.html"><i class="fas fa-user"></i>Profile</a>
+  <a href="myStore.html" class="active"><i class="fas fa-store"></i>Store</a>
+  <a href="sellerOrders.html" id="nav-orders"><i class="fas fa-box"></i>Orders
+    <span class="nav-badge" id="orderBadge" style="display:none;">0</span>
+  </a>
+  <a href="sellerChat.html"><i class="fas fa-comments"></i>Chat
+    <span class="nav-badge" id="chatBadge" style="display:none;"></span>
+  </a>
+  <a href="Analytics.html"><i class="fas fa-chart-line"></i>Analytics</a>
+</div>
+
+  <script src="myStore.js"></script>
+  <script>
+(function() {
+  const isDark = localStorage.getItem("darkMode") === "true";
+  if (isDark) document.documentElement.setAttribute("data-theme", "dark");
+})();
+</script>
+
+</body>
+</html>

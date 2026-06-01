@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Allow: /sellerpanel.html
+Allow: /SellerProfile.html
+Allow: /orders.html
+Allow: /products.html
+Allow: /analytics.html
+Allow: /settings.html
+
+# Private pages ko block karo
+Disallow: /api/
+Disallow: /admin/
+Disallow: /login?*
+Disallow: /reset-password
+Disallow: /verify-email
+
+# Sitemap batao
+Sitemap: https://seller.delightpk.shop/sitemap.xml
+
+# Crawl delay (optional - agar server slow ho)
+Crawl-delay: 1

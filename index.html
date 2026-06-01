@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title -->
+    <title>Seller Profile - Delightpk</title>
+
+    <!-- Meta Description -->
+    <meta name="description" content="Manage your seller profile on Delightpk. Update business details,Sell Products, Order Management, and store information.">
+
+    <!-- Meta Keywords -->
+    <meta name="keywords" content="seller profile, delightpk seller, ecommerce seller, online store manager">
+
+    <!-- Author -->
+    <meta name="author" content="Delightpk">
+
+    <!-- Robots -->
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://seller.delightpk.shop/index.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://seller.delightpk.shop/index.html">
+    <meta property="og:title" content="Seller Profile - Delightpk">
+    <meta property="og:description" content="Manage your seller profile on Delightpk.">
+    <meta property="og:image" content="https://seller.delightpk.shop/assets/Delightpk.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://seller.delightpk.shop/index.html">
+    <meta property="twitter:title" content="Seller Profile - Delightpk">
+    <meta property="twitter:description" content="Manage your seller profile on Delightpk.">
+    <meta property="twitter:image" content="https://seller.delightpk.shop/assets/og-Delightpk.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./SellerProfile.css">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#2563eb">
+
+    <!-- No-Cache for Seller Pages (Sensitive Data) -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+
+<body>
+<!-- Theme Toggle -->
+<!-- Theme Toggle -->
+<div class="theme-switch-wrapper">
+  <div class="theme-switch" id="themeSwitch" onclick="toggleTheme()">
+    <div class="knob" id="themeKnob">☀️</div>
+  </div>
+</div>
+<!-- Loader Overlay -->
+<div id="loaderOverlay">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Loading Profile...</div>
+</div>
+
+<!-- Toast Notifications -->
+<div class="toast-container" id="toastContainer"></div>
+
+
+<div class="container" id="mainContainer">
+  <h2>My Profile <span id="premiumBadge" style="display:none;"><span class="premium-badge"><i class="fas fa-crown"></i> PREMIUM</span></span></h2>
+
+  <div id="planStatus" class="plan-status free">
+    <i class="fas fa-spinner fa-spin"></i> Loading plan...
+  </div>
+
+  <div class="profile-row">
+    <div class="profile-pic" id="profilePicContainer">
+      <span class="plus-sign">+</span>
+      <img id="profile-img" src="" style="display:none;">
+    </div>
+    <div class="info-box">
+      <input type="text" id="storeName" placeholder="Your Store Name">
+    </div>
+  </div>
+
+  <input type="file" id="file-upload" accept="image/*" style="display:none">
+
+  <label for="deliveryInput">Delivery Charges (Rs.)</label>
+  <input type="number" id="deliveryInput" placeholder="200">
+
+  <button class="btn-primary" onclick="updateProfile()">💾 Save & Continue</button>
+
+  <div class="store-link-box" id="storeLinkBox" style="display:none;">
+    <p>🔗 Your Store Link</p>
+    <a id="storeLink" href="#" target="_blank"></a>
+    <button class="btn-success" onclick="copyStoreLink()">📋 Copy Link</button>
+  </div>
+
+  <!-- Custom Domain Section -->
+  <div class="domain-section locked" id="domainSection">
+    <h4><i class="fas fa-globe"></i> Custom Domain</h4>
+    <div id="domainContent">
+      <p class="domain-note" id="domainNote">🔒 Upgrade to Premium to connect your own domain</p>
+    </div>
+  </div>
+
+  <!-- Ads Section -->
+  <div id="adsSection">
+    <div class="ads-locked-overlay" id="adsLockedOverlay" onclick="goToSubscription()">
+      <i class="fas fa-lock"></i>
+      <p>Ads Management Locked</p>
+      <span class="upgrade-text">🔓 Upgrade to Premium to unlock 7 Ad slots</span>
+    </div>
+    <div id="adsUnlockedSection" style="display:none;">
+      <button class="btn-secondary" onclick="goToUploadAds()">📢 Manage Ads (7 Slots)</button>
+    </div>
+  </div>
+
+  <!-- Analytics Section -->
+  <div id="analyticsSection">
+    <div class="analytics-locked-overlay" id="analyticsLockedOverlay" onclick="goToSubscription()">
+      <i class="fas fa-lock"></i>
+      <p>Analytics Locked</p>
+      <span class="upgrade-text">🔓 Upgrade to Premium to unlock Analytics</span>
+    </div>
+    <div id="analyticsUnlockedSection" style="display:none;">
+      <button class="btn-secondary" onclick="goToAnalytics()">📊 View Analytics</button>
+    </div>
+  </div>
+
+  <!-- ===== FAKE REVIEWS SECTION (PREMIUM ONLY) ===== -->
+  <div id="fakeReviewsSection">
+    <div class="fake-reviews-locked-overlay" id="fakeReviewsLockedOverlay" onclick="goToSubscription()">
+      <i class="fas fa-lock"></i>
+      <p>Fake Reviews Manager Locked</p>
+      <span class="upgrade-text">🔓 Upgrade to Premium to add unlimited fake reviews</span>
+    </div>
+    <div id="fakeReviewsUnlockedSection" style="display:none;">
+      <!-- Product Toggle List -->
+      <div class="products-toggle-section">
+        <div class="products-toggle-header" onclick="toggleProductsList()">
+          <div class="toggle-left">
+            <i class="fas fa-box-open"></i>
+            <span>Your Products</span>
+            <span class="products-count" id="productsCount">0</span>
+          </div>
+          <i class="fas fa-chevron-down toggle-arrow" id="productsToggleArrow"></i>
+        </div>
+        <div class="products-toggle-body" id="productsToggleBody">
+          <div class="products-list" id="productsList">
+            <div class="products-loading">
+              <i class="fas fa-spinner fa-spin"></i>
+              <span>Loading products...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selected Product Fake Reviews -->
+      <div class="fake-review-panel" id="fakeReviewPanel" style="display:none;">
+        <div class="fake-review-product-info" id="fakeReviewProductInfo"></div>
+
+        <div class="fake-review-form">
+          <h5><i class="fas fa-star"></i> Add Fake Review</h5>
+          <div class="form-group">
+            <label>Buyer Name</label>
+            <input type="text" id="fakeBuyerName" placeholder="e.g. Fake Name" maxlength="30">
+          </div>
+          <div class="form-group" style="display:none;">
+            <label>Buyer Phone</label>
+            <input type="text" id="fakeBuyerPhone" value="03000000000" maxlength="15">
+          </div>
+          <div class="form-group">
+            <label>Rating</label>
+            <div class="star-rating-input" id="starRatingInput">
+              <i class="far fa-star" data-rating="1"></i>
+              <i class="far fa-star" data-rating="2"></i>
+              <i class="far fa-star" data-rating="3"></i>
+              <i class="far fa-star" data-rating="4"></i>
+              <i class="far fa-star" data-rating="5"></i>
+            </div>
+            <input type="hidden" id="fakeRatingValue" value="5">
+          </div>
+          <div class="form-group">
+            <label>Review Message</label>
+            <textarea id="fakeReviewMessage" placeholder="Write a fake review..." rows="3" maxlength="500"></textarea>
+          </div>
+
+          <button class="btn-fake-review" onclick="submitFakeReview()">
+            <i class="fas fa-paper-plane"></i> Submit Fake Review
+          </button>
+        </div>
+
+        <!-- Existing Fake Reviews for Selected Product -->
+        <div class="fake-reviews-list-section">
+          <h5><i class="fas fa-list"></i> Fake Reviews for this Product</h5>
+          <div class="fake-reviews-list" id="fakeReviewsList">
+            <div class="empty-fake-reviews">
+              <i class="fas fa-comment-slash"></i>
+              <p>No fake reviews yet for this product</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-primary" id="uploadBtn" onclick="goToSellerPanel()">📤 Upload Product</button>
+
+  <div id="adsBtnWrapper" style="display:none;">
+    <button class="btn-secondary" onclick="goToUploadAds()">📢 Upload Ads (Admin)</button>
+  </div>
+
+  <button class="btn-premium" id="upgradeBtn" onclick="goToSubscription()" style="display:none;">
+    <i class="fas fa-crown"></i> Upgrade to Premium - Rs.1499/month
+  </button>
+
+  <h2 id="welcomeText"></h2>
+  <button class="btn-danger" onclick="logout()">🚪 Logout</button>
+</div>
+
+<div class="bar">
+   <a href="index.html" class="active"><i class="fas fa-user"></i> Profile</a>
+   <a href="myStore.html" onclick="goToMyStore()">
+    <i class="fas fa-store"></i>Store</a>
+   <a href="sellerOrders.html" onclick="goToOrders()" id="nav-orders"><i class="fas fa-box"></i> My Orders
+    <span class="nav-badge" id="orderBadge" style="display:none;">0</span></a>
+   <a href="sellerChat.html" id="nav-chat"><i class="fas fa-comments"></i> Chat
+    <span class="nav-badge" id="chatBadge" style="display:none;">0</span></a>
+   <a href="Analytics.html" id="nav-analytics" onclick="return checkAnalyticsAccess(event)"><i class="fas fa-chart-line"></i> Analytics</a>
+</div>
+  <script src="index.js"></script>
+
+  <!-- ✅ Chat Badge Counter -->
+  <script>
+  (function() {
+    const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
+    let prevUnread = -1;
+
+    function getSeller() {
+      try {
+        const s = localStorage.getItem("seller");
+        if (!s) return null;
+        const p = JSON.parse(s);
+        return p && p.phone ? p : null;
+      } catch(e) { return null; }
+    }
+
+    function updateChatBadge(count) {
+      const badge = document.getElementById("chatBadge");
+      if (!badge) return;
+      if (count > 0) {
+        badge.textContent = count > 99 ? "99+" : count;
+        badge.style.display = "flex";
+        if (prevUnread >= 0 && count > prevUnread && typeof showToast === "function") {
+          const diff = count - prevUnread;
+          showToast("💬 " + diff + " New Message" + (diff > 1 ? "s" : "") + "!", "", "fa-comments");
+        }
+      } else {
+        badge.style.display = "none";
+      }
+      prevUnread = count;
+    }
+
+    async function checkChatBadge() {
+      const seller = getSeller();
+      if (!seller) return;
+      try {
+        const res = await fetch(API_BASE + "/seller/chat/" + seller.phone);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.success || !Array.isArray(data.threads)) return;
+        const total = data.threads.reduce((sum, t) => sum + (t.unreadCount || 0), 0);
+        updateChatBadge(total);
+      } catch(e) {}
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      checkChatBadge();
+      setInterval(checkChatBadge, 8000);
+    });
+  })();
+  </script>
+</body>
+</html>

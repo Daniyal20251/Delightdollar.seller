@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="Analytics.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Premium Analytics - Delight.pk</title>
+</head>
+<body>
+
+<div id="loaderOverlay">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Loading Analytics...</div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="header">
+  <div class="crown"><i class="fas fa-crown"></i></div>
+  <h1>Premium Analytics</h1>
+  <p>Professional insights for your store</p>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+  <div class="stat-card sales">
+    <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+    <div class="stat-label">Total Revenue</div>
+    <div class="stat-value" id="totalRevenue">Rs.0</div>
+    <span class="stat-change up" id="revenueChange"><i class="fas fa-arrow-up"></i> 0%</span>
+  </div>
+  <div class="stat-card orders">
+    <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+    <div class="stat-label">Total Orders</div>
+    <div class="stat-value" id="totalOrders">0</div>
+    <span class="stat-change up" id="ordersChange"><i class="fas fa-arrow-up"></i> 0%</span>
+  </div>
+  <div class="stat-card products">
+    <div class="stat-icon"><i class="fas fa-box"></i></div>
+    <div class="stat-label">Products Sold</div>
+    <div class="stat-value" id="productsSold">0</div>
+    <span class="stat-change up" id="productsChange"><i class="fas fa-arrow-up"></i> 0%</span>
+  </div>
+  <div class="stat-card customers">
+    <div class="stat-icon"><i class="fas fa-users"></i></div>
+    <div class="stat-label">Unique Customers</div>
+    <div class="stat-value" id="uniqueCustomers">0</div>
+    <span class="stat-change up" id="customersChange"><i class="fas fa-arrow-up"></i> 0%</span>
+  </div>
+  <div class="stat-card listings">
+    <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+    <div class="stat-label">Total Listings</div>
+    <div class="stat-value" id="totalListings">0</div>
+    <span class="stat-change up" id="listingsChange"><i class="fas fa-arrow-up"></i> 0%</span>
+  </div>
+</div>
+
+<!-- Sales Chart -->
+<div class="chart-section">
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">📉 Sales Overview</div>
+        <div class="chart-subtitle">Revenue trend over time</div>
+      </div>
+      <div class="time-filter">
+        <button class="active" onclick="setPeriod('7d')">7D</button>
+        <button onclick="setPeriod('30d')">30D</button>
+        <button onclick="setPeriod('90d')">90D</button>
+      </div>
+    </div>
+    <div class="chart-container">
+      <canvas id="salesChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Order Status -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">📊 Order Status</div>
+        <div class="chart-subtitle">Current order breakdown</div>
+      </div>
+    </div>
+    <div class="status-grid">
+      <div class="status-item status-pending">
+        <div class="status-count" id="pendingCount">0</div>
+        <div class="status-label">Pending</div>
+      </div>
+      <div class="status-item status-completed">
+        <div class="status-count" id="completedCount">0</div>
+        <div class="status-label">Completed</div>
+      </div>
+      <div class="status-item status-cancelled">
+        <div class="status-count" id="cancelledCount">0</div>
+        <div class="status-label">Cancelled</div>
+      </div>
+    </div>
+    <div class="chart-container" style="height:180px; margin-top:16px;">
+      <canvas id="statusChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Top Products -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">🏆 Top Selling Products</div>
+        <div class="chart-subtitle">Best performers (excluding cancelled)</div>
+      </div>
+    </div>
+    <div class="top-products" id="topProducts">
+      <!-- Dynamic content -->
+    </div>
+  </div>
+
+  <!-- Top Viewed Products -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">👁️ Top Viewed Products</div>
+        <div class="chart-subtitle">Most popular products by views</div>
+      </div>
+    </div>
+    <div class="top-products" id="topViewedProducts">
+      <!-- Dynamic content -->
+    </div>
+  </div>
+
+  <!-- Hourly Chart -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">⏰ Peak Hours</div>
+        <div class="chart-subtitle">When your customers shop most</div>
+      </div>
+    </div>
+    <div class="chart-container">
+      <canvas id="hourlyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Insight -->
+  <div class="insight-card" id="insightCard">
+    <div class="insight-icon"><i class="fas fa-lightbulb"></i></div>
+    <div class="insight-text" id="insightText">
+      <strong>Tip:</strong> Your peak sales time is <span id="peakHour">--:--</span>. Consider running promotions during this window!
+    </div>
+  </div>
+</div>
+
+<div class="bar">
+  <a href="index.html"><i class="fas fa-user"></i>Profile</a>
+  <a href="myStore.html"><i class="fas fa-store"></i>Store</a>
+  <a href="sellerOrders.html"><i class="fas fa-box"></i>Orders</a>
+  <a href="sellerChat.html"><i class="fas fa-comments"></i>Chat
+    <span class="nav-badge" id="chatBadge" style="display:none;"></span>
+  </a>
+  <a href="Analytics.html" class="active"><i class="fas fa-chart-line"></i>Analytics</a>
+</div>
+
+<script>
+const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
+let seller = JSON.parse(localStorage.getItem("seller"));
+if(!seller) window.location.href = "login.html";
+
+let salesChart, statusChart, hourlyChart;
+let allOrders = [];
+let currentPeriod = '7d';
+let allProducts = []; // Seller ke sab products
+
+function showToast(title, message, icon="fa-bell") {
+  const container = document.getElementById("toastContainer");
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.innerHTML = `
+    <div class="toast-icon"><i class="fas ${icon}"></i></div>
+    <div>
+      <div style="font-weight:700;font-size:14px;">${title}</div>
+      <div style="font-size:12px;color:var(--text-muted);">${message}</div>
+    </div>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
+}
+
+function formatCurrency(num) {
+  if(num >= 100000) return 'Rs.' + (num/100000).toFixed(1) + 'L';
+  if(num >= 1000) return 'Rs.' + (num/1000).toFixed(1) + 'K';
+  return 'Rs.' + num;
+}
+
+function formatNumber(num) {
+  if(num >= 100000) return (num/100000).toFixed(1) + 'L';
+  if(num >= 1000) return (num/1000).toFixed(1) + 'K';
+  return num.toString();
+}
+
+function getPeriodDays() {
+  return currentPeriod === '7d' ? 7 : currentPeriod === '30d' ? 30 : 90;
+}
+
+function getFilteredOrders() {
+  const days = getPeriodDays();
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  return allOrders.filter(o => {
+    const orderDate = new Date(o.createdAt || o.date || o.timestamp || Date.now());
+    return orderDate >= cutoff;
+  });
+}
+
+function getActiveOrders(orders) {
+  return orders.filter(o => o.status !== 'Cancelled');
+}
+
+function calculateStats(orders) {
+  const activeOrders = getActiveOrders(orders);
+  const totalRevenue = activeOrders.reduce((sum, o) => {
+    let price = 0;
+    if(o.product && o.product.price) price = parseFloat(o.product.price);
+    else if(o.total) price = parseFloat(o.total);
+    else if(o.price) price = parseFloat(o.price);
+    else if(o.amount) price = parseFloat(o.amount);
+    return sum + price;
+  }, 0);
+  const totalOrders = orders.length;
+  const productsSold = activeOrders.reduce((sum, o) => {
+    if(o.items && Array.isArray(o.items)) {
+      return sum + o.items.reduce((s, item) => s + (parseInt(item.qty) || 1), 0);
+    }
+    return sum + 1;
+  }, 0);
+  const uniqueCustomers = new Set(activeOrders.map(o => o.buyerPhone || o.customerPhone || o.phone || o.buyerId)).size;
+  const pending = orders.filter(o => o.status === 'Pending').length;
+  const completed = orders.filter(o => o.status === 'Completed' || o.status === 'Delivered' || o.status === 'Shipped').length;
+  const cancelled = orders.filter(o => o.status === 'Cancelled').length;
+  return { totalRevenue, totalOrders, productsSold, uniqueCustomers, pending, completed, cancelled };
+}
+
+function calculateChange(currentValue, previousValue) {
+  if (previousValue === 0) return currentValue > 0 ? 100 : 0;
+  return ((currentValue - previousValue) / previousValue * 100).toFixed(1);
+}
+
+function getPreviousPeriodOrders() {
+  const days = getPeriodDays();
+  const now = new Date();
+  const currentStart = new Date(now);
+  currentStart.setDate(currentStart.getDate() - days);
+  const previousStart = new Date(currentStart);
+  previousStart.setDate(previousStart.getDate() - days);
+  return allOrders.filter(o => {
+    const orderDate = new Date(o.createdAt || o.date || o.timestamp || Date.now());
+    return orderDate >= previousStart && orderDate < currentStart;
+  });
+}
+
+function updateStatsCards(stats) {
+  document.getElementById('totalRevenue').textContent = formatCurrency(stats.totalRevenue);
+  document.getElementById('totalOrders').textContent = stats.totalOrders;
+  document.getElementById('productsSold').textContent = stats.productsSold;
+  document.getElementById('uniqueCustomers').textContent = stats.uniqueCustomers;
+  document.getElementById('pendingCount').textContent = stats.pending;
+  document.getElementById('completedCount').textContent = stats.completed;
+  document.getElementById('cancelledCount').textContent = stats.cancelled;
+  document.getElementById('totalListings').textContent = formatNumber(allProducts.length);
+
+  const prevOrders = getPreviousPeriodOrders();
+  const prevStats = calculateStats(prevOrders);
+  updateChangeBadge('revenueChange', calculateChange(stats.totalRevenue, prevStats.totalRevenue));
+  updateChangeBadge('ordersChange', calculateChange(stats.totalOrders, prevStats.totalOrders));
+  updateChangeBadge('productsChange', calculateChange(stats.productsSold, prevStats.productsSold));
+  updateChangeBadge('customersChange', calculateChange(stats.uniqueCustomers, prevStats.uniqueCustomers));
+  updateChangeBadge('listingsChange', 0);
+}
+
+function updateChangeBadge(elementId, change) {
+  const el = document.getElementById(elementId);
+  const num = parseFloat(change);
+  const icon = num >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+  el.innerHTML = `<i class="fas ${icon}"></i> ${Math.abs(num)}%`;
+  el.className = `stat-change ${num >= 0 ? 'up' : 'down'}`;
+}
+
+function getDailyData(orders) {
+  const days = getPeriodDays();
+  const labels = [];
+  const data = [];
+  const today = new Date();
+  for(let i = days-1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    labels.push(dateStr);
+    const dayOrders = orders.filter(o => {
+      const oDate = new Date(o.createdAt || o.date || o.timestamp || Date.now());
+      return oDate.toDateString() === d.toDateString();
+    });
+    const dayRevenue = getActiveOrders(dayOrders).reduce((sum, o) => {
+      let price = 0;
+      if(o.product && o.product.price) price = parseFloat(o.product.price);
+      else if(o.total) price = parseFloat(o.total);
+      else if(o.price) price = parseFloat(o.price);
+      else if(o.amount) price = parseFloat(o.amount);
+      return sum + price;
+    }, 0);
+    data.push(dayRevenue);
+  }
+  return { labels, data };
+}
+
+function getHourlyData(orders) {
+  const hours = Array(24).fill(0);
+  getActiveOrders(orders).forEach(o => {
+    const orderDate = new Date(o.createdAt || o.date || o.timestamp || Date.now());
+    const h = orderDate.getHours();
+    let price = 0;
+    if(o.product && o.product.price) price = parseFloat(o.product.price);
+    else if(o.total) price = parseFloat(o.total);
+    else if(o.price) price = parseFloat(o.price);
+    else if(o.amount) price = parseFloat(o.amount);
+    hours[h] += price;
+  });
+  const labels = Array.from({length: 24}, (_, i) => {
+    const h = i % 12 || 12;
+    return h + (i < 12 ? 'AM' : 'PM');
+  });
+  return { labels, data: hours };
+}
+
+function getTopProducts(orders) {
+  const productMap = {};
+  getActiveOrders(orders).forEach(o => {
+    if(o.product) {
+      const name = o.product.title || o.product.name || 'Unknown Product';
+      const price = parseFloat(o.product.price) || 0;
+      if(!productMap[name]) productMap[name] = { name, qty: 0, revenue: 0 };
+      productMap[name].qty += 1;
+      productMap[name].revenue += price;
+    }
+    else if(o.items && Array.isArray(o.items)) {
+      o.items.forEach(item => {
+        const name = item.name || item.productName || item.title || 'Unknown';
+        const price = parseFloat(item.price) || 0;
+        const qty = parseInt(item.qty) || 1;
+        if(!productMap[name]) productMap[name] = { name, qty: 0, revenue: 0 };
+        productMap[name].qty += qty;
+        productMap[name].revenue += price * qty;
+      });
+    }
+    else {
+      const name = o.productName || o.title || 'Unknown Product';
+      const price = parseFloat(o.price) || parseFloat(o.total) || 0;
+      if(!productMap[name]) productMap[name] = { name, qty: 0, revenue: 0 };
+      productMap[name].qty += 1;
+      productMap[name].revenue += price;
+    }
+  });
+  return Object.values(productMap).sort((a,b) => b.revenue - a.revenue).slice(0, 5);
+}
+
+function renderTopProducts(products) {
+  const container = document.getElementById('topProducts');
+  if(products.length === 0) {
+    container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:20px;">No sales data yet</p>';
+    return;
+  }
+  container.innerHTML = products.map((p, i) => `
+    <div class="product-row">
+      <div class="product-rank rank-${i < 3 ? i+1 : 'other'}">${i+1}</div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-sales">${p.qty} sold</div>
+      </div>
+      <div class="product-revenue">${formatCurrency(p.revenue)}</div>
+    </div>
+  `).join('');
+}
+
+// FIXED: Get top viewed products from allProducts array
+function getTopViewedProducts() {
+  // Sort products by views (descending) and take top 5
+  const sorted = [...allProducts].sort((a, b) => (b.views || 0) - (a.views || 0));
+  return sorted.slice(0, 5);
+}
+
+function renderTopViewedProducts(products) {
+  const container = document.getElementById('topViewedProducts');
+  if(!products || products.length === 0) {
+    container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:20px;">No view data yet</p>';
+    return;
+  }
+  container.innerHTML = products.map((p, i) => `
+    <div class="viewed-row">
+      <div class="viewed-rank rank-${i < 3 ? i+1 : 'other'}">${i+1}</div>
+      <div class="viewed-info">
+        <div class="viewed-name">${p.title || p.name || 'Unknown Product'}</div>
+        <div class="viewed-views">${formatNumber(p.views || 0)} views</div>
+      </div>
+      <div class="viewed-count">
+        <i class="fas fa-eye" style="font-size:12px;"></i>
+        ${formatNumber(p.views || 0)}
+      </div>
+    </div>
+  `).join('');
+}
+
+function findPeakHour(hourlyData) {
+  let maxVal = 0, maxIdx = 0;
+  hourlyData.forEach((val, idx) => { if(val > maxVal) { maxVal = val; maxIdx = idx; } });
+  const h = maxIdx % 12 || 12;
+  return h + ':00 ' + (maxIdx < 12 ? 'AM' : 'PM');
+}
+
+function initCharts() {
+  const isDark = !document.documentElement.hasAttribute('data-theme');
+  const gridColor = isDark ? 'rgba(148,163,184,0.1)' : 'rgba(148,163,184,0.2)';
+  const textColor = isDark ? '#94a3b8' : '#64748b';
+
+  const salesCtx = document.getElementById('salesChart').getContext('2d');
+  const salesGradient = salesCtx.createLinearGradient(0, 0, 0, 300);
+  salesGradient.addColorStop(0, 'rgba(245,158,11,0.3)');
+  salesGradient.addColorStop(1, 'rgba(245,158,11,0)');
+
+  salesChart = new Chart(salesCtx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Revenue',
+        data: [],
+        borderColor: '#f59e0b',
+        backgroundColor: salesGradient,
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: '#f59e0b',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: v => formatCurrency(v) } }
+      }
+    }
+  });
+
+  const statusCtx = document.getElementById('statusChart').getContext('2d');
+  statusChart = new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Pending', 'Completed', 'Cancelled'],
+      datasets: [{
+        data: [0,0,0],
+        backgroundColor: ['#3b82f6', '#22c55e', '#ef4444'],
+        borderWidth: 0,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'right', labels: { color: textColor, font: { size: 11 }, boxWidth: 12 } }
+      }
+    }
+  });
+
+  const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
+  const hourlyGradient = hourlyCtx.createLinearGradient(0, 0, 0, 300);
+  hourlyGradient.addColorStop(0, 'rgba(168,85,247,0.4)');
+  hourlyGradient.addColorStop(1, 'rgba(168,85,247,0.05)');
+
+  hourlyChart = new Chart(hourlyCtx, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Sales',
+        data: [],
+        backgroundColor: hourlyGradient,
+        borderColor: '#a855f7',
+        borderWidth: 1,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 9 }, maxTicksLimit: 12 } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: v => formatCurrency(v) } }
+      }
+    }
+  });
+}
+
+function updateCharts() {
+  const filtered = getFilteredOrders();
+  const stats = calculateStats(filtered);
+  updateStatsCards(stats);
+
+  const daily = getDailyData(filtered);
+  salesChart.data.labels = daily.labels;
+  salesChart.data.datasets[0].data = daily.data;
+  salesChart.update();
+
+  statusChart.data.datasets[0].data = [stats.pending, stats.completed, stats.cancelled];
+  statusChart.update();
+
+  const hourly = getHourlyData(filtered);
+  hourlyChart.data.labels = hourly.labels;
+  hourlyChart.data.datasets[0].data = hourly.data;
+  hourlyChart.update();
+
+  const topProducts = getTopProducts(filtered);
+  renderTopProducts(topProducts);
+
+  // FIXED: Get top viewed from allProducts (already fetched)
+  const topViewed = getTopViewedProducts();
+  renderTopViewedProducts(topViewed);
+
+  document.getElementById('peakHour').textContent = findPeakHour(hourly.data);
+}
+
+function setPeriod(period) {
+  currentPeriod = period;
+  document.querySelectorAll('.time-filter button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  updateCharts();
+}
+
+async function loadAnalytics() {
+  try {
+    // Fetch seller orders
+    const res = await fetch(`${API_BASE}/seller-orders/${seller.phone}`);
+    allOrders = await res.json();
+    if(!Array.isArray(allOrders)) allOrders = [];
+
+    console.log("Loaded orders:", allOrders.length);
+
+    // FIXED: Fetch seller products (same endpoint as myStore.html)
+    try {
+      const productsRes = await fetch(`${API_BASE}/products/${seller.phone}`);
+      allProducts = await productsRes.json();
+      if(!Array.isArray(allProducts)) allProducts = [];
+      console.log("Loaded products:", allProducts.length);
+      console.log("Sample product views:", allProducts[0]?.views);
+    } catch(err) {
+      console.warn("Could not load seller products:", err);
+      allProducts = [];
+    }
+
+    updateCharts();
+
+    setTimeout(() => {
+      document.getElementById('loaderOverlay').classList.add('hidden');
+    }, 500);
+
+  } catch(err) {
+    console.error("Analytics load error:", err);
+    showToast("⚠️ Error", "Failed to load analytics data", "fa-exclamation-triangle");
+    document.getElementById('loaderOverlay').classList.add('hidden');
+  }
+}
+
+function initDarkMode() {
+  const savedTheme = localStorage.getItem("darkMode");
+  if(savedTheme === "false") {
+    document.documentElement.setAttribute("data-theme", "light");
+  }
+}
+initDarkMode();
+
+window.addEventListener('load', () => {
+  initCharts();
+  loadAnalytics();
+});
+</script>
+</body>
+</html>

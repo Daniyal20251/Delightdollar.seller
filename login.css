@@ -1,0 +1,362 @@
+body{
+    background-color: #fff9ec;
+    border:10px solid #ff9800;
+    border-radius:20px;
+    padding:20px;
+    margin: 15px;
+    padding-bottom: 28px;
+    animation: bo 2s infinite;
+  }
+  @keyframes bo {
+  0%   { border-color: #ff6c00; }
+  25%  { border-color: #ffcc00; }
+  50%  { border-color: #ff6454; }
+  75%  { border-color: #ff4b4b; }
+  100% { border-color: #ff6c00; }
+}
+
+.animated-border {
+  border: 4px solid;
+  animation: bo 3s linear infinite;
+  border-radius: 8px;
+}
+  .delight{
+    font-weight: 5px;
+    font-size:small;
+    color:#ff9800;
+    text-shadow:2px 5px #d0d0d0;
+    margin:10px;
+    margin-bottom: 40px;
+    border-radius:20px;
+    animation: b 2s infinite;
+  }
+  @keyframes b{
+  100%   { color: #ff6c00; }
+  100%  { color: #ffa726; }
+  100%  { color: #ffcc80; }
+  100%  { color: #ffa726; }
+  100% { color: #ff6c00; }
+  }
+  .logo{
+    text-align:center;
+  }
+  .login{
+    border:3px solid black;
+    border-radius:20px;
+    margin:0px;
+    background-color:#fafafa;
+    padding:5px 25px 25px 25px;
+  }
+  .login h3{
+    text-align: center;
+  }
+  #name,
+  .login input[type="number"],
+  .login input[type="password"]{
+    width:90%;
+    height:15px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    border: 1px solid black;
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 10px;
+  }
+  .login input[type="submit"]{
+    border: none;
+    border-radius: 20px;
+    width: 150px;
+    height: 35px;
+    color: white;
+    font-weight: bold;
+    background: linear-gradient(45deg, #f4511e, #ffa726);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login input[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(244, 81, 30, 0.4);
+  }
+
+  .login input[type="submit"]:active {
+    transform: translateY(0);
+  }
+
+  /* ========== LOADING SPINNER ========== */
+.login button[type="submit"] {
+  border: none;
+  border-radius: 20px;
+  width: 150px;
+  height: 35px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  background: linear-gradient(45deg, #f4511e, #ffa726);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.login button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(244, 81, 30, 0.4);
+}
+
+.login button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* Loading spinner ab button pe */
+.login button[type="submit"].loading {
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.login button[type="submit"].loading::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  top: 50%;
+  left: 50%;
+  margin-top: -9px;
+  margin-left: -9px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ========== EYE TOGGLE + ANIMATIONS ========== */
+
+.password-wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+/* 🔥 FIX: Eye wala input same margin/padding ke saath */
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+  width: 90%;
+  height: 15px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  border: 1px solid black;
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 10px;
+  padding-right: 9px;
+}
+
+/* 🔥 FIX: Eye ka position bilkul right mein same line mein */
+.toggle-password {
+  position: absolute;
+  right: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  color: #ff9800;
+}
+
+.toggle-password svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========== PROFESSIONAL TOAST NOTIFICATIONS ========== */
+
+.toast-container {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  min-width: 280px;
+  max-width: 400px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  transform: translateY(-20px);
+  opacity: 0;
+  animation: toastSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  pointer-events: auto;
+}
+
+.toast.success {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+}
+
+.toast.error {
+  background: linear-gradient(135deg, #f44336, #ef5350);
+}
+
+.toast.warning {
+  background: linear-gradient(135deg, #ff9800, #ffa726);
+}
+
+.toast.info {
+  background: linear-gradient(135deg, #2196f3, #42a5f5);
+}
+
+.toast.hiding {
+  animation: toastSlideOut 0.3s ease-in forwards;
+}
+
+.toast-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.toast-close {
+  margin-left: auto;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+
+/* ========== PROFESSIONAL ANIMATIONS ========== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Apply animations */
+.delight {
+  animation: fadeInUp 1s ease-out, b 2s infinite;
+}
+
+.store-info {
+  animation: bounceIn 1s ease-out 0.3s both;
+}
+
+.login {
+  animation: fadeInUp 1s ease-out 0.5s both;
+}
+
+.login h3 {
+  animation: slideIn 0.8s ease-out 0.7s both;
+}
+
+.login form {
+  animation: fadeIn 1s ease-out 0.9s both;
+}
+
+.login input[type="submit"] {
+  animation: pulse 2s infinite 1.5s;
+}
+
+    .store-info {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .store-info img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ef6c00;
+      animation: pulseGlow 2s infinite;
+    }
+    .store-info h4 {
+      color: #ef6c00;
+      margin: 10px 0 0 0;
+      font-size: 22px;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(239, 108, 0, 0.3); }
+      50% { box-shadow: 0 0 25px rgba(239, 108, 0, 0.6); }
+    }

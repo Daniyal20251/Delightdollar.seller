@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Your Store - Delightpk</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Segoe UI',sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  background:#f4f4f9;
+  padding:20px;
+}
+
+.container{
+  background:#fff;
+  padding:30px 25px;
+  border-radius:14px;
+  box-shadow:0 6px 16px rgba(0,0,0,0.12);
+  width:100%;
+  max-width:380px;
+  text-align:center;
+}
+
+h2{
+  color:#ef6c00;
+  margin-bottom:25px;
+  font-size:24px;
+}
+
+.profile-pic{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:#777;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:0 auto 20px;
+  position:relative;
+  cursor:pointer;
+  overflow:hidden;
+}
+
+.plus-sign{
+  font-size:48px;
+  color:white;
+  font-weight:bold;
+  text-shadow:0 2px 6px rgba(0,0,0,0.6);
+  transition:0.2s;
+}
+
+.profile-pic:hover .plus-sign{
+  transform:scale(1.1);
+}
+
+.profile-pic img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none;
+}
+
+input[type="text"]{
+  width:100%;
+  padding:12px 15px;
+  margin-bottom:18px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  font-size:16px;
+}
+
+button{
+  width:100%;
+  background:#ef6c00;
+  color:white;
+  border:none;
+  padding:13px 0;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:16px;
+  transition:0.3s;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:45px;
+}
+
+button:hover{
+  background:#d85c00;
+}
+
+button:disabled{
+  background:#ccc;
+  cursor:not-allowed;
+}
+
+/* Loading Spinner Styles */
+.button--loading::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin-top: -10px;
+  margin-left: -10px;
+  border: 3px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s linear infinite;
+}
+
+.button--loading .button__text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.file-input{
+  display:none;
+}
+
+.note{
+  font-size:13px;
+  color:#666;
+  margin-bottom:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>🛍️ Create Your Store</h2>
+
+  <label for="file-upload">
+    <div class="profile-pic">
+      <span class="plus-sign">+</span>
+      <img id="profile-img">
+    </div>
+  </label>
+
+  <input type="file" id="file-upload" class="file-input" accept="image/*">
+
+  <input type="text" id="storeName" placeholder="Enter your Store Name">
+
+  <button id="saveBtn" onclick="createStore()">
+    <span class="button__text">Save & Continue</span>
+  </button>
+</div>
+
+<script>
+const fileInput   = document.getElementById("file-upload");
+const profileImg  = document.getElementById("profile-img");
+const plusSign    = document.querySelector(".plus-sign");
+const storeInput  = document.getElementById("storeName");
+const saveBtn     = document.getElementById("saveBtn");
+
+let selectedFile = null;
+
+// ✅ Seller login check - IMPROVED
+let seller = JSON.parse(localStorage.getItem("seller"));
+console.log("SP.Name - Seller from localStorage:", seller);
+
+if(!seller || !seller.phone){
+  alert("⚠️ Please login first!");
+  window.location.href = "login.html";
+}
+
+// ✅ Load existing data (edit mode) - INPUT HAMESHA EMPTY
+async function loadSettings(){
+  try{
+    console.log("Loading settings for phone:", seller.phone);
+    
+    const res = await fetch(
+      `https://delight-backend--araindaniyalo2.replit.app/settings?phone=${seller.phone}`
+    );
+    const data = await res.json();
+    console.log("Settings loaded:", data);
+
+    if(data.logo){
+      profileImg.src = data.logo;
+      profileImg.style.display = "block";
+      plusSign.style.display = "none";
+    }
+
+    // ❌ INPUT KO BILKUL EMPTY RAKHNA - KOIBHI AUTO-FILL NAHI
+    storeInput.value = "";
+    
+  }catch(err){
+    console.log("Load error:", err);
+  }
+}
+window.onload = loadSettings;
+
+// ✅ Image preview
+fileInput.addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(file){
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      profileImg.src = ev.target.result;
+      profileImg.style.display = "block";
+      plusSign.style.display = "none";
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// ✅ Save Store (LOGO REQUIRED) - WITH LOADING ANIMATION & REDIRECT FIX
+async function createStore(){
+  const storeName = storeInput.value.trim();
+
+  if(!storeName){
+    alert("⚠️ Store name required!");
+    return;
+  }
+
+  // ❌ Logo mandatory
+  if(!selectedFile && profileImg.style.display !== "block"){
+    alert("⚠️ Please upload your store logo!");
+    return;
+  }
+
+  // 🔥 Loading animation start
+  saveBtn.classList.add("button--loading");
+  saveBtn.disabled = true;
+
+  const formData = new FormData();
+  
+  // ✅ IMPORTANT: Use seller.phone
+  formData.append("phone", seller.phone);
+  formData.append("name", storeName);
+
+  if(selectedFile){
+    formData.append("logo", selectedFile);
+  }
+
+  try{
+    console.log("Sending update with phone:", seller.phone);
+    
+    const res = await fetch(
+      "https://delight-backend--araindaniyalo2.replit.app/update-settings",
+      { method:"POST", body:formData }
+    );
+
+    const data = await res.json();
+    console.log("Update response:", data);
+
+    if(data.success){
+      alert("✅ Store saved successfully!");
+      
+      // 🔥 Redirect fix
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 500);
+      
+    }else{
+      alert("⚠️ " + (data.message || "Something went wrong"));
+      // Loading hatana agar error aaye
+      saveBtn.classList.remove("button--loading");
+      saveBtn.disabled = false;
+    }
+
+  }catch(err){
+    alert("⚠️ Server not reachable!");
+    console.error(err);
+    // Loading hatana agar error aaye
+    saveBtn.classList.remove("button--loading");
+    saveBtn.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delight.pk - Seller Ads</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg-body: #f8f5f2;
+  --bg-card: #ffffff;
+  --bg-input: #f0ece8;
+  --bg-file-input: #faf7f4;
+  --bg-ad-slot: #f5f1ed;
+  --bg-ad-slot-hover: #efe9e3;
+  --bg-modal: #ffffff;
+  --bg-btn-cancel: #e8e4e0;
+  --bg-btn-cancel-hover: #ddd8d3;
+  --text-primary: #1a1a2e;
+  --text-secondary: #7a7a8a;
+  --text-heading: #e87300;
+  --border-color: #d4cec8;
+  --border-dashed: #c4bdb6;
+  --shadow-card: 0 8px 32px rgba(26,26,46,0.08);
+  --shadow-elevated: 0 12px 40px rgba(26,26,46,0.12);
+  --overlay-bg: rgba(10,10,30,0.65);
+  --premium-purple: #7c3aed;
+  --accent-peach: #f4a261;
+  --accent-skin: #e9c46a;
+  --accent-light-purple: #b8a9c9;
+  --accent-dark-purple: #5a4fcf;
+}
+
+[data-theme="dark"] {
+  --bg-body: #0d0d12;
+  --bg-card: #14141e;
+  --bg-input: #1c1c2a;
+  --bg-file-input: #181825;
+  --bg-ad-slot: #14141e;
+  --bg-ad-slot-hover: #1c1c2a;
+  --bg-modal: #14141e;
+  --bg-btn-cancel: #252538;
+  --bg-btn-cancel-hover: #32324a;
+  --text-primary: #f0eef5;
+  --text-secondary: #8a8a9e;
+  --text-heading: #e87300;
+  --border-color: #2a2a3e;
+  --border-dashed: #3a3a50;
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-elevated: 0 12px 40px rgba(0,0,0,0.5);
+  --overlay-bg: rgba(5,5,15,0.85);
+  --accent-peach: #f4a261;
+  --accent-skin: #e9c46a;
+  --accent-light-purple: #b8a9c9;
+  --accent-dark-purple: #7c6fae;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+  max-width: 520px; 
+  margin: auto; 
+  padding: 24px 16px; 
+  background: var(--bg-body); 
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h2 { 
+  text-align: center; 
+  margin-bottom: 12px; 
+  color: var(--text-heading); 
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: -0.5px;
+}
+
+/* LOCKED STATE */
+.locked-container {
+  text-align: center;
+  padding: 56px 28px;
+  background: var(--bg-card);
+  border-radius: 24px;
+  margin-top: 24px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+.locked-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--premium-purple), var(--accent-peach), var(--accent-skin));
+}
+.locked-container .lock-icon {
+  font-size: 56px;
+  color: var(--accent-light-purple);
+  margin-bottom: 20px;
+  opacity: 0.7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(244,162,97,0.08));
+  border-radius: 50%;
+  border: 2px solid rgba(124,58,237,0.15);
+}
+.locked-container h3 {
+  font-size: 24px;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.locked-container p {
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin-bottom: 28px;
+  line-height: 1.7;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.locked-features {
+  text-align: left;
+  max-width: 300px;
+  margin: 0 auto 28px;
+  background: var(--bg-input);
+  padding: 20px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+}
+.locked-features li {
+  padding: 10px 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+.locked-features li:not(:last-child) {
+  border-bottom: 1px solid var(--border-color);
+}
+.locked-features li i {
+  color: var(--premium-purple);
+  font-size: 16px;
+}
+.btn-upgrade {
+  width: 100%;
+  max-width: 320px;
+  padding: 16px;
+  background: linear-gradient(135deg, #7c3aed, #a855f7, #ef7e0e);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+.btn-upgrade:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(124, 58, 237, 0.4);
+  background-position: 100% 0;
+}
+.btn-upgrade:active {
+  transform: translateY(0);
+}
+
+/* PREMIUM HEADER */
+.premium-header {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(244, 162, 97, 0.08));
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.premium-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--premium-purple), var(--accent-peach));
+  border-radius: 16px 16px 0 0;
+}
+.premium-header i {
+  color: var(--accent-peach);
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+.premium-header p {
+  color: var(--premium-purple);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* AD SLOTS */
+.ad-slot {
+  width: 100%;
+  height: 150px;
+  border: 2px dashed var(--border-dashed);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-ad-slot);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.ad-slot:hover {
+  border-color: var(--accent-peach);
+  background: var(--bg-ad-slot-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26,26,46,0.06);
+}
+.ad-slot.has-ad {
+  border: 2px solid transparent;
+  background: var(--bg-card);
+  cursor: default;
+  box-shadow: var(--shadow-card);
+}
+.ad-slot.has-ad:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+.add-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+.add-icon .plus {
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--accent-peach);
+  line-height: 1;
+}
+.add-icon span {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.ad-content{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  position: relative;
+}
+.ad-content img{
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.ad-content .delete-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+}
+.ad-content .delete-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(239,68,68,0.4);
+}
+.ad-content .delete-btn:active {
+  transform: scale(0.95);
+}
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--overlay-bg);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.modal-overlay.active {
+  display: flex;
+}
+.modal-box {
+  background: var(--bg-modal);
+  border-radius: 20px;
+  padding: 28px;
+  width: 100%;
+  max-width: 420px;
+  animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-elevated);
+}
+@keyframes slideUp {
+  from { transform: translateY(40px) scale(0.96); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+.modal-box h3 {
+  text-align: center;
+  color: var(--text-heading);
+  margin-bottom: 24px;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.modal-box input[type="text"] {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 15px;
+  margin-bottom: 14px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease;
+  outline: none;
+}
+.modal-box input[type="text"]:focus {
+  border-color: var(--accent-peach);
+}
+.modal-box input[type="file"] {
+  width: 100%;
+  padding: 14px;
+  border: 2px dashed var(--border-dashed);
+  border-radius: 12px;
+  margin-bottom: 14px;
+  background: var(--bg-file-input);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.modal-box input[type="file"]:hover {
+  border-color: var(--accent-peach);
+  background: rgba(244,162,97,0.04);
+}
+.modal-box .preview-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  display: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.modal-box .btn-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+.modal-box button {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.modal-box .btn-save {
+  background: linear-gradient(135deg, #c17817, #f4a261);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(193,120,23,0.3);
+}
+.modal-box .btn-save:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(193,120,23,0.4);
+}
+.modal-box .btn-save:active {
+  transform: translateY(0);
+}
+.modal-box .btn-save:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+.modal-box .btn-cancel {
+  background: var(--bg-btn-cancel);
+  color: var(--text-primary);
+}
+.modal-box .btn-cancel:hover {
+  background: var(--bg-btn-cancel-hover);
+}
+
+/* Loading spinner */
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.slot-label {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.9);
+  padding: 4px 10px;
+  border-radius: 8px;
+  z-index: 2;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+[data-theme="dark"] .slot-label {
+  background: rgba(20, 20, 30, 0.85);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 92%;
+  max-width: 420px;
+}
+.toast {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 4px solid #22c55e;
+  border: 1px solid var(--border-color);
+  border-left-width: 4px;
+}
+.toast.error { border-left-color: #ef4444; }
+@keyframes slideDown {
+  from { transform: translateY(-30px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOCKED VIEW (Free Users) -->
+<div id="lockedView" style="display:none;">
+  <div style="text-align:center; margin: 20px 0;">
+    <h2>📰 Seller Ads</h2>
+    <p style="color: var(--text-secondary); font-size: 13px;">Premium Feature</p>
+  </div>
+
+  <div class="locked-container">
+    <div class="lock-icon"><i class="fas fa-lock"></i></div>
+    <h3>Ads System Locked</h3>
+    <p>Upgrade to Premium Seller to unlock the Ads Management system and promote your products with 7 banner slots!</p>
+
+    <ul class="locked-features">
+      <li><i class="fas fa-check-circle"></i> 7 Ad Banner Slots</li>
+      <li><i class="fas fa-check-circle"></i> Custom Store Ads</li>
+      <li><i class="fas fa-check-circle"></i> Priority Placement</li>
+    </ul>
+
+    <button class="btn-upgrade" onclick="goToSubscription()">
+      <i class="fas fa-crown"></i> Upgrade to Premium
+    </button>
+  </div>
+</div>
+
+<!-- UNLOCKED VIEW (Premium Users) -->
+<div id="unlockedView" style="display:none;">
+  <div class="premium-header">
+    <i class="fas fa-crown"></i>
+    <p>⭐ Premium Seller - Ads Unlocked</p>
+  </div>
+
+  <h2 id="adsTitle">📰 Manage Your Ads</h2>
+  <p style="text-align:center;color:#888;font-size:13px;margin-bottom:20px;">Click on any slot to add or edit your ad</p>
+
+  <div id="adSlotsContainer"></div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="adModal">
+  <div class="modal-box">
+    <h3>🖼️ Add Ad</h3>
+    <input type="text" id="adNameInput" placeholder="Ad Name" readonly>
+    <input type="file" id="adImageInput" accept="image/*">
+    <img id="previewImage" class="preview-img" alt="Preview">
+    <div class="btn-group">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAd()">Save Ad</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const apiBase = "https://delight-backend--araindaniyalo2.replit.app";
+
+let AD_NAMES = [];
+let currentSlotIndex = null;
+let selectedFile = null;
+let currentPlan = null;
+let sellerName = "";
+
+// ===== GENERATE AD NAMES FROM STORE NAME =====
+function generateAdNames(storeName) {
+  if (!storeName || storeName.trim() === "") {
+    storeName = "My Store";
+  }
+  const baseName = storeName.trim();
+  const names = [baseName];
+  for (let i = 1; i < 7; i++) {
+    names.push(`${baseName}${i}`);
+  }
+  return names;
+}
+
+// ===== CHECK IF PLAN IS PAID (premium OR yearly) =====
+function isPaidPlan(plan) {
+  return plan === 'premium' || plan === 'yearly';
+}
+
+// ===== PLAN CHECK =====
+async function checkPlanAccess() {
+  const seller = JSON.parse(localStorage.getItem("seller"));
+  if(!seller) {
+    window.location.href = "login.html";
+    return false;
+  }
+
+  // Clear stale localStorage plan data to always use fresh API data
+  localStorage.removeItem(`sellerPlan_${seller.phone}`);
+
+  // Fetch seller details from backend to get latest name
+  try {
+    const res = await fetch(`${apiBase}/settings?phone=${seller.phone}`);
+    const data = await res.json();
+    sellerName = data.name || seller.name || "My Store";
+    AD_NAMES = generateAdNames(sellerName);
+    document.getElementById('adsTitle').innerHTML = `📰 ${sellerName} - Manage Ads`;
+    document.title = `${sellerName} - Ads | Delight.pk`;
+  } catch(err) {
+    console.error("Failed to fetch seller name:", err);
+    sellerName = seller.name || "My Store";
+    AD_NAMES = generateAdNames(sellerName);
+  }
+
+  // Check plan status from API
+  try {
+    const planRes = await fetch(`${apiBase}/plan-status/${seller.phone}`);
+    const planData = await planRes.json();
+
+    if(planData.success) {
+      currentPlan = planData;
+      // Also update localStorage with fresh data
+      localStorage.setItem(`sellerPlan_${seller.phone}`, JSON.stringify(planData));
+    } else {
+      currentPlan = { plan: 'free', adsUnlocked: false };
+    }
+  } catch(err) {
+    console.error("Plan API failed:", err);
+    // Fallback to localStorage only if API fails completely
+    const planData = localStorage.getItem(`sellerPlan_${seller.phone}`);
+    if(planData) {
+      currentPlan = JSON.parse(planData);
+    } else {
+      currentPlan = { plan: 'free', adsUnlocked: false };
+    }
+  }
+
+  console.log("📋 Current plan:", currentPlan);
+
+  // Check if expired
+  if(isPaidPlan(currentPlan.plan) && currentPlan.expiresAt) {
+    if(new Date() > new Date(currentPlan.expiresAt)) {
+      currentPlan = { plan: 'free', adsUnlocked: false };
+      localStorage.setItem(`sellerPlan_${seller.phone}`, JSON.stringify(currentPlan));
+      showToast("⚠️ Premium Expired", "Your plan has expired. Please renew.", true);
+    }
+  }
+
+  // ===== FIX: Check both premium AND yearly plans =====
+  const hasPaidPlan = isPaidPlan(currentPlan.plan);
+  const adsEnabled = hasPaidPlan && currentPlan.adsUnlocked !== false;
+
+  console.log("🔓 Ads enabled:", adsEnabled, "| Plan:", currentPlan.plan, "| adsUnlocked:", currentPlan.adsUnlocked);
+
+  // Show appropriate view
+  if(adsEnabled) {
+    document.getElementById('lockedView').style.display = 'none';
+    document.getElementById('unlockedView').style.display = 'block';
+    loadAds();
+    return true;
+  } else {
+    document.getElementById('lockedView').style.display = 'block';
+    document.getElementById('unlockedView').style.display = 'none';
+    return false;
+  }
+}
+
+function goToSubscription() {
+  window.location.href = 'subscription.html';
+}
+
+// ===== DARK MODE =====
+function toggleDarkMode() {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  if(isDark) {
+    document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("darkMode", "false");
+  } else {
+    document.documentElement.setAttribute("data-theme", "dark");
+    localStorage.setItem("darkMode", "true");
+  }
+}
+(function() {
+  const isDark = localStorage.getItem("darkMode") === "true";
+  if(isDark) document.documentElement.setAttribute("data-theme", "dark");
+})();
+
+// ===== LOAD ADS =====
+async function loadAds() {
+  try {
+    const res = await fetch(`${apiBase}/admin/ads`);
+    const ads = await res.json();
+    console.log("📢 All ads from API:", ads);
+
+    const container = document.getElementById("adSlotsContainer");
+    container.innerHTML = "";
+
+    for (let i = 0; i < 7; i++) {
+      const slotName = AD_NAMES[i];
+      let ad = null;
+
+      for (let a of ads) {
+        const adName = getAdName(a).toLowerCase().trim();
+        const searchName = slotName.toLowerCase().trim();
+        if (adName === searchName) {
+          ad = a;
+          break;
+        }
+      }
+
+      console.log(`Slot ${i+1} (${slotName}) -> Matched ad:`, ad ? ad.id : "None");
+
+      const slotDiv = document.createElement("div");
+      slotDiv.className = `ad-slot ${ad ? 'has-ad' : ''}`;
+      slotDiv.dataset.index = i;
+
+      if (ad) {
+        const imageUrl = ad.image ? `${ad.image}?cb=${Date.now()}_${i}` : 'https://via.placeholder.com/400x140';
+        slotDiv.innerHTML = `
+          <div class="ad-content">
+            <span class="slot-label">Slot ${i+1}</span>
+            <img src="${imageUrl}" alt="${slotName}" loading="eager">
+            <button class="delete-btn" onclick="event.stopPropagation(); deleteAd(${ad.id}, ${i})">Delete</button>
+          </div>
+        `;
+      } else {
+        slotDiv.innerHTML = `
+          <span class="slot-label">Slot ${i+1}</span>
+          <div class="add-icon">
+            <span class="plus">+</span>
+            <span>Add Ad</span>
+          </div>
+        `;
+      }
+
+      slotDiv.addEventListener("click", () => openModal(i));
+      container.appendChild(slotDiv);
+    }
+
+  } catch(err) {
+    console.error("Failed to load ads:", err);
+    showToast("Failed to load ads", "Please refresh the page", true);
+  }
+}
+
+function getAdName(ad) {
+  const possibleFields = ['name', 'title', 'text', 'label', 'caption', 'heading', 'description', 'adName', 'adTitle'];
+  for (let field of possibleFields) {
+    if (ad[field] && typeof ad[field] === 'string') {
+      return ad[field].trim();
+    }
+  }
+  for (let key in ad) {
+    if (typeof ad[key] === 'string' && ad[key].length < 100) {
+      return ad[key].trim();
+    }
+  }
+  return "";
+}
+
+// ===== MODAL =====
+function openModal(index) {
+  currentSlotIndex = index;
+  document.getElementById("adNameInput").value = AD_NAMES[index];
+  document.getElementById("adImageInput").value = "";
+  document.getElementById("previewImage").style.display = "none";
+  selectedFile = null;
+  document.getElementById("adModal").classList.add("active");
+}
+
+function closeModal() {
+  document.getElementById("adModal").classList.remove("active");
+  currentSlotIndex = null;
+  selectedFile = null;
+}
+
+document.getElementById("adImageInput").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById("previewImage");
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// ===== SAVE AD =====
+async function saveAd() {
+  if (!selectedFile) {
+    showToast("Please select an image", "", true);
+    return;
+  }
+
+  const saveBtn = document.querySelector('.modal-box .btn-save');
+  const originalText = saveBtn.innerHTML;
+
+  // Show loading spinner
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = '<span class="spinner"></span> Uploading...';
+
+  const formData = new FormData();
+  formData.append("title", AD_NAMES[currentSlotIndex]);
+  formData.append("image", selectedFile);
+
+  try {
+    const res = await fetch(`${apiBase}/admin/add-ad`, {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+
+    if(data.success){
+      showToast("✅ Ad Saved", `${AD_NAMES[currentSlotIndex]} uploaded successfully`);
+      closeModal();
+      loadAds();
+    } else {
+      showToast("❌ Failed", data.message || "Failed to save ad", true);
+    }
+  } catch(err){
+    console.error(err);
+    showToast("❌ Error", "Network error. Please try again.", true);
+  } finally {
+    // Reset button
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = originalText;
+  }
+}
+
+// ===== DELETE AD =====
+async function deleteAd(id, slotIndex) {
+  if(!confirm(`Delete ad "${AD_NAMES[slotIndex]}"?`)) return;
+
+  try {
+    const res = await fetch(`${apiBase}/admin/delete-ad/${id}`, { method: "DELETE" });
+    const data = await res.json();
+
+    if(data.success){
+      showToast("✅ Deleted", `${AD_NAMES[slotIndex]} removed`);
+      loadAds();
+    } else {
+      showToast("❌ Failed", data.message || "Failed to delete", true);
+    }
+  } catch(err){
+    console.error(err);
+    showToast("❌ Error", "Network error", true);
+  }
+}
+
+document.getElementById("adModal").addEventListener("click", function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ===== TOAST =====
+function showToast(title, message, isError) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${isError ? 'error' : ''}`;
+  toast.innerHTML = `
+    <div style="width:42px;height:42px;background:${isError ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'linear-gradient(135deg,#22c55e,#16a34a)'};border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;">
+      <i class="fas ${isError ? 'fa-times' : 'fa-check'}"></i>
+    </div>
+    <div>
+      <div style="font-weight:700;color:var(--text-primary);">${title}</div>
+      <div style="font-size:13px;color:var(--text-secondary);">${message}</div>
+    </div>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
+}
+
+// Initialize
+checkPlanAccess();
+</script>
+
+</body>
+</html>

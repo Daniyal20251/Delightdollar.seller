@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="itemedit.css">
+<title>Edit Product — Delightpk</title>
+</head>
+<body>
+
+<header>
+  <div class="back-btn" onclick="history.back()"><img src="Delight icons/Back.png" alt="Back"></div>
+  <h4>Edit Product</h4>
+</header>
+
+<form id="productForm">
+
+  <label>Title:</label>
+  <input type="text" id="title" placeholder="Product Title">
+
+  <label>Price (Rs):</label>
+  <input type="text" id="price" placeholder="e.g: 999">
+
+  <label>Discount (Rs):</label>
+  <input type="text" id="discount" placeholder="e.g: 100 (Optional)">
+
+  <label>Colors:</label>
+  <input type="text" id="colors" placeholder="e.g: Red, Blue, Black (Optional)">
+
+  <label>Sizes:</label>
+  <input type="text" id="sizes" placeholder="e.g: Small, Medium, Large (Optional)">
+
+  <label>Description:</label>
+  <textarea id="description" rows="5" placeholder="Describe your product..."></textarea>
+
+  <label>Select Category</label>
+  <div class="cat-dropdown">
+    <div class="cat-display" id="catDisplay">
+      <span id="catDisplayText">Choose Category</span>
+      <span id="catDisplayArrow">▼</span>
+    </div>
+    <div class="cat-panel" id="catPanel">
+      <div class="cat-main" data-cat="Men Fashion">Men Fashion 👕 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Men Fashion - T-Shirts">T-Shirts</div>
+        <div class="sub-item" data-value="Men Fashion - Jeans">Jeans</div>
+        <div class="sub-item" data-value="Men Fashion - Shoes">Shoes</div>
+        <div class="sub-item" data-value="Men Fashion - Watches">Watches</div>
+        <div class="sub-item" data-value="Men Fashion - Caps">Caps</div>
+      </div>
+      <div class="cat-main" data-cat="Women Fashion">Women Fashion 👗 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Women Fashion - Dresses">Dresses</div>
+        <div class="sub-item" data-value="Women Fashion - Handbags">Handbags</div>
+        <div class="sub-item" data-value="Women Fashion - Jewelry Sets">Jewelry Sets</div>
+        <div class="sub-item" data-value="Women Fashion - Sandals">Sandals</div>
+        <div class="sub-item" data-value="Women Fashion - Makeup Kits">Makeup Kits</div>
+        <div class="sub-item" data-value="Women Fashion - Summer Collection">Summer Collection</div>
+        <div class="sub-item" data-value="Women Fashion - Winter Collection">Winter Collection</div>
+        <div class="sub-item" data-value="Women Fashion - Occasion Collection">Occasion Collection</div>
+        <div class="sub-item" data-value="Women Fashion - Khaddar Dresses">Khaddar Dresses</div>
+        <div class="sub-item" data-value="Women Fashion - Velvet Dresses">Velvet Dresses</div>
+        <div class="sub-item" data-value="Women Fashion - Lawn Dresses">Lawn Dresses</div>
+        <div class="sub-item" data-value="Women Fashion - Shawl Collection">Shawl Collection</div>
+      </div>
+      <div class="cat-main" data-cat="Mobiles">Mobiles 📱 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Mobiles - Smartphones">Smartphones</div>
+        <div class="sub-item" data-value="Mobiles - Keypad Phones">Keypad Phones</div>
+        <div class="sub-item" data-value="Mobiles - Mobile Covers">Mobile Covers</div>
+        <div class="sub-item" data-value="Mobiles - Chargers">Chargers</div>
+        <div class="sub-item" data-value="Mobiles - Earbuds">Earbuds</div>
+      </div>
+      <div class="cat-main" data-cat="Mobile Accessories">Mobile Accessories 🔌 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Mobile Accessories - Power Banks">Power Banks</div>
+        <div class="sub-item" data-value="Mobile Accessories - Smart Watches">Smart Watches</div>
+        <div class="sub-item" data-value="Mobile Accessories - Data Cables">Data Cables</div>
+        <div class="sub-item" data-value="Mobile Accessories - Earphones">Earphones</div>
+        <div class="sub-item" data-value="Mobile Accessories - Stands & Holders">Stands & Holders</div>
+      </div>
+      <div class="cat-main" data-cat="Electronics">Electronics ⚡ <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Electronics - LED TV">LED TV</div>
+        <div class="sub-item" data-value="Electronics - Bluetooth Speakers">Bluetooth Speakers</div>
+        <div class="sub-item" data-value="Electronics - Headphones">Headphones</div>
+        <div class="sub-item" data-value="Electronics - Cameras">Cameras</div>
+        <div class="sub-item" data-value="Electronics - Smart Gadgets">Smart Gadgets</div>
+      </div>
+      <div class="cat-main" data-cat="Beauty Products">Beauty Products 💄 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Beauty Products - Perfumes">Perfumes</div>
+        <div class="sub-item" data-value="Beauty Products - Lipsticks">Lipsticks</div>
+        <div class="sub-item" data-value="Beauty Products - Face Creams">Face Creams</div>
+        <div class="sub-item" data-value="Beauty Products - Hair Oils">Hair Oils</div>
+        <div class="sub-item" data-value="Beauty Products - Makeup Brushes">Makeup Brushes</div>
+      </div>
+      <div class="cat-main" data-cat="Home & Living">Home & Living 🏠 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Home & Living - Home Gadgets">Home Gadgets</div>
+        <div class="sub-item" data-value="Home & Living - Cleaning Tools">Cleaning Tools</div>
+        <div class="sub-item" data-value="Home & Living - Kitchen Accessories">Kitchen Accessories</div>
+        <div class="sub-item" data-value="Home & Living - Room Decor">Room Decor</div>
+        <div class="sub-item" data-value="Home & Living - Small Appliances">Small Appliances</div>
+      </div>
+      <div class="cat-main" data-cat="Watches">Watches ⌚ <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Watches - Smart Watches">Smart Watches</div>
+        <div class="sub-item" data-value="Watches - Digital Watches">Digital Watches</div>
+        <div class="sub-item" data-value="Watches - Analog Watches">Analog Watches</div>
+        <div class="sub-item" data-value="Watches - Couple Watches">Couple Watches</div>
+        <div class="sub-item" data-value="Watches - Fitness Bands">Fitness Bands</div>
+      </div>
+      <div class="cat-main" data-cat="Shoes">Shoes 👟 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Shoes - Sneakers">Sneakers</div>
+        <div class="sub-item" data-value="Shoes - Sandals">Sandals</div>
+        <div class="sub-item" data-value="Shoes - Joggers">Joggers</div>
+        <div class="sub-item" data-value="Shoes - Slippers">Slippers</div>
+        <div class="sub-item" data-value="Shoes - Formal Shoes">Formal Shoes</div>
+      </div>
+      <div class="cat-main" data-cat="Bags">Bags 👜 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Bags - School Bags">School Bags</div>
+        <div class="sub-item" data-value="Bags - Laptop Bags">Laptop Bags</div>
+        <div class="sub-item" data-value="Bags - Hand Bags">Hand Bags</div>
+        <div class="sub-item" data-value="Bags - Travel Bags">Travel Bags</div>
+        <div class="sub-item" data-value="Bags - Wallets">Wallets</div>
+      </div>
+      <div class="cat-main" data-cat="Jewelry">Jewelry 💍 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Jewelry - Rings">Rings</div>
+        <div class="sub-item" data-value="Jewelry - Necklaces">Necklaces</div>
+        <div class="sub-item" data-value="Jewelry - Earrings">Earrings</div>
+        <div class="sub-item" data-value="Jewelry - Bracelets">Bracelets</div>
+        <div class="sub-item" data-value="Jewelry - Anklets">Anklets</div>
+      </div>
+      <div class="cat-main" data-cat="Baby Products">Baby Products 🧸 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Baby Products - Baby Toys">Baby Toys</div>
+        <div class="sub-item" data-value="Baby Products - Baby Clothes">Baby Clothes</div>
+      </div>
+      <div class="cat-main" data-cat="Sports Items">Sports Items 🏋️ <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Sports Items - Gym Gloves">Gym Gloves</div>
+        <div class="sub-item" data-value="Sports Items - Water Bottles">Water Bottles</div>
+        <div class="sub-item" data-value="Sports Items - Dumbbells">Dumbbells</div>
+        <div class="sub-item" data-value="Sports Items - Football">Football</div>
+        <div class="sub-item" data-value="Sports Items - Yoga Mats">Yoga Mats</div>
+      </div>
+      <div class="cat-main" data-cat="Gaming">Gaming 🎮 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Gaming - Gamepads">Gamepads</div>
+        <div class="sub-item" data-value="Gaming - Gaming Headsets">Gaming Headsets</div>
+        <div class="sub-item" data-value="Gaming - PS5 / Xbox Accessories">PS5 / Xbox Accessories</div>
+        <div class="sub-item" data-value="Gaming - Mouse Pads">Mouse Pads</div>
+        <div class="sub-item" data-value="Gaming - Gaming Keyboards">Gaming Keyboards</div>
+      </div>
+      <div class="cat-main" data-cat="Computer Accessories">Computer Accessories 💻 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Computer Accessories - Keyboards">Keyboards</div>
+        <div class="sub-item" data-value="Computer Accessories - Mouse">Mouse</div>
+        <div class="sub-item" data-value="Computer Accessories - USB Drives">USB Drives</div>
+        <div class="sub-item" data-value="Computer Accessories - Headsets">Headsets</div>
+        <div class="sub-item" data-value="Computer Accessories - Laptop Stands">Laptop Stands</div>
+      </div>
+      <div class="cat-main" data-cat="Other">Other 🛒 <span class="arrow">▼</span></div>
+      <div class="sub-list">
+        <div class="sub-item" data-value="Other Things">Other Things</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay-backdrop" id="overlayBackdrop"></div>
+
+  <label>Product Images (max 12)</label>
+  <div class="upload-grid" id="imageGrid"></div>
+
+  <label>Product Videos (max 3)</label>
+  <div class="video-grid" id="videoGrid"></div>
+
+  <button type="submit" id="updateBtn">Update Product</button>
+</form>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">Updating...</div>
+</div>
+
+<div id="successBox" class="success">✅ Product updated successfully!</div>
+
+<script>
+// ══ AUTH ══
+const seller = JSON.parse(localStorage.getItem("seller"));
+if(!seller){ alert("Please login first"); location.href="login.html"; }
+const sellerPhone = seller.phone;
+
+// ══ LOAD PRODUCT ══
+const editItem = JSON.parse(localStorage.getItem("editItem") || "{}");
+if(!editItem.id){ alert("No product selected"); location.href="seller-products.html"; }
+
+// Fill form
+document.getElementById("title").value = editItem.title || "";
+document.getElementById("price").value = editItem.price || "";
+document.getElementById("discount").value = editItem.discount || "";
+document.getElementById("colors").value = Array.isArray(editItem.colors) ? editItem.colors.join(", ") : (editItem.colors || "");
+document.getElementById("sizes").value = Array.isArray(editItem.sizes) ? editItem.sizes.join(", ") : (editItem.sizes || "");
+document.getElementById("description").value = editItem.description || "";
+
+// ══ STATE ══
+let existingImages = [...(editItem.images || [])];   // URLs from server
+let existingVideos = [...(editItem.videos || [])];   // URLs from server
+let newImageFiles = new Array(12).fill(null);        // File objects
+let newVideoFiles = new Array(3).fill(null);         // File objects
+
+// ══ CATEGORY ══
+const catDisplay = document.getElementById('catDisplay');
+const catPanel = document.getElementById('catPanel');
+const catDisplayText = document.getElementById('catDisplayText');
+const catDisplayArrow = document.getElementById('catDisplayArrow');
+const overlayBackdrop = document.getElementById('overlayBackdrop');
+
+function openCatPanel() { catPanel.classList.add('open'); catDisplayArrow.textContent = '▲'; overlayBackdrop.classList.add('open'); }
+function closeCatPanel() { catPanel.classList.remove('open'); catDisplayArrow.textContent = '▼'; overlayBackdrop.classList.remove('open'); }
+
+catDisplay.addEventListener('click', () => catPanel.classList.contains('open') ? closeCatPanel() : openCatPanel());
+overlayBackdrop.addEventListener('click', closeCatPanel);
+
+document.querySelectorAll('.cat-main').forEach(main => {
+  main.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const subList = main.nextElementSibling;
+    const arrow = main.querySelector('.arrow');
+    document.querySelectorAll('.sub-list').forEach(list => {
+      if (list !== subList) { list.classList.remove('open'); const a = list.previousElementSibling.querySelector('.arrow'); if(a) a.classList.remove('open'); }
+    });
+    const isOpen = subList.classList.contains('open');
+    subList.classList.toggle('open', !isOpen);
+    arrow.classList.toggle('open', !isOpen);
+  });
+});
+
+document.querySelectorAll('.sub-item').forEach(item => {
+  item.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const val = item.dataset.value;
+    localStorage.setItem('selectedCategory', val);
+    catDisplayText.textContent = val;
+    catDisplay.classList.add('has-value');
+    document.querySelectorAll('.sub-item').forEach(d => d.classList.remove('selected'));
+    document.querySelectorAll('.cat-main').forEach(m => m.classList.remove('selected'));
+    item.classList.add('selected');
+    item.closest('.sub-list').previousElementSibling.classList.add('selected');
+    closeCatPanel();
+  });
+});
+
+const savedCat = editItem.category || localStorage.getItem("selectedCategory");
+if (savedCat) {
+  catDisplayText.textContent = savedCat;
+  catDisplay.classList.add('has-value');
+  document.querySelectorAll('.sub-item').forEach(item => {
+    if (item.dataset.value === savedCat) {
+      item.classList.add('selected');
+      item.closest('.sub-list').previousElementSibling.classList.add('selected');
+    }
+  });
+}
+
+// ══ IMAGE GRID — 12 boxes unified ══
+const imageGrid = document.getElementById("imageGrid");
+
+function createImageBox(index) {
+  const box = document.createElement("div");
+  box.className = "upload-box";
+  box.dataset.index = index;
+  box.innerHTML = `
+    <span class="plus-icon">+</span>
+    <input type="file" class="imgInput" accept="image/*" data-index="${index}">
+    <button type="button" class="remove-btn">&times;</button>
+  `;
+
+  const input = box.querySelector(".imgInput");
+  const removeBtn = box.querySelector(".remove-btn");
+
+  input.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    newImageFiles[index] = file;
+    // Remove existing URL if any
+    if (existingImages[index]) existingImages[index] = null;
+    showPreview(box, URL.createObjectURL(file), 'image');
+    updateImageGridVisibility();
+  });
+
+  removeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    newImageFiles[index] = null;
+    existingImages[index] = null;
+    clearBox(box);
+    updateImageGridVisibility();
+  });
+
+  return box;
+}
+
+function showPreview(box, src, type) {
+  clearBox(box);
+  box.classList.add("has-preview");
+  if (type === 'image') {
+    const img = document.createElement("img");
+    img.className = "preview-img";
+    img.src = src;
+    box.appendChild(img);
+  }
+}
+
+function clearBox(box) {
+  box.classList.remove("has-preview");
+  box.querySelectorAll(".preview-img, .preview-video").forEach(el => el.remove());
+  const input = box.querySelector("input");
+  if (input) input.value = "";
+}
+
+function updateImageGridVisibility() {
+  const boxes = Array.from(imageGrid.querySelectorAll(".upload-box"));
+  // Count filled
+  let filled = 0;
+  boxes.forEach((box, i) => {
+    if (existingImages[i] || newImageFiles[i]) filled++;
+  });
+  // Show all filled + 1 empty (up to 12)
+  let emptyShown = 0;
+  boxes.forEach((box, i) => {
+    const hasContent = existingImages[i] || newImageFiles[i];
+    if (hasContent) {
+      box.style.display = "flex";
+    } else if (emptyShown < 1 && filled < 12) {
+      box.style.display = "flex";
+      emptyShown++;
+    } else {
+      box.style.display = "none";
+    }
+  });
+}
+
+// Create 12 boxes
+for (let i = 0; i < 12; i++) {
+  imageGrid.appendChild(createImageBox(i));
+}
+
+// Fill existing images
+existingImages.forEach((url, i) => {
+  if (url) {
+    const box = imageGrid.children[i];
+    showPreview(box, url, 'image');
+  }
+});
+updateImageGridVisibility();
+
+// ══ VIDEO GRID — 3 boxes unified ══
+const videoGrid = document.getElementById("videoGrid");
+
+function createVideoBox(index) {
+  const box = document.createElement("div");
+  box.className = "video-box";
+  box.dataset.index = index;
+  box.innerHTML = `
+    <span class="plus-icon">+</span>
+    <input type="file" class="videoInput" accept="video/*" data-index="${index}">
+    <button type="button" class="remove-btn">&times;</button>
+  `;
+
+  const input = box.querySelector(".videoInput");
+  const removeBtn = box.querySelector(".remove-btn");
+
+  input.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    newVideoFiles[index] = file;
+    if (existingVideos[index]) existingVideos[index] = null;
+    showVideoPreview(box, URL.createObjectURL(file));
+    updateVideoGridVisibility();
+  });
+
+  removeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    newVideoFiles[index] = null;
+    existingVideos[index] = null;
+    clearVideoBox(box);
+    updateVideoGridVisibility();
+  });
+
+  return box;
+}
+
+function showVideoPreview(box, src) {
+  clearVideoBox(box);
+  box.classList.add("has-preview");
+  const video = document.createElement("video");
+  video.className = "preview-video";
+  video.src = src;
+  video.controls = true;
+  box.appendChild(video);
+}
+
+function clearVideoBox(box) {
+  box.classList.remove("has-preview");
+  box.querySelectorAll("video").forEach(el => el.remove());
+  const input = box.querySelector("input");
+  if (input) input.value = "";
+}
+
+function updateVideoGridVisibility() {
+  const boxes = Array.from(videoGrid.querySelectorAll(".video-box"));
+  let filled = 0;
+  boxes.forEach((box, i) => {
+    if (existingVideos[i] || newVideoFiles[i]) filled++;
+  });
+  let emptyShown = 0;
+  boxes.forEach((box, i) => {
+    const hasContent = existingVideos[i] || newVideoFiles[i];
+    if (hasContent) {
+      box.style.display = "flex";
+    } else if (emptyShown < 1 && filled < 3) {
+      box.style.display = "flex";
+      emptyShown++;
+    } else {
+      box.style.display = "none";
+    }
+  });
+}
+
+for (let i = 0; i < 3; i++) {
+  videoGrid.appendChild(createVideoBox(i));
+}
+
+existingVideos.forEach((url, i) => {
+  if (url) {
+    const box = videoGrid.children[i];
+    showVideoPreview(box, url);
+  }
+});
+updateVideoGridVisibility();
+
+// ══ SUBMIT ══
+const updateBtn = document.getElementById("updateBtn");
+const loading = document.getElementById("loading");
+
+document.getElementById("productForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const title = document.getElementById("title").value.trim();
+  const price = document.getElementById("price").value.trim();
+
+  if(!title || !price){ alert("Title & price required"); return; }
+
+  const selectedCategory = localStorage.getItem("selectedCategory") || editItem.category || "";
+  if(!selectedCategory){ alert("Please select a category!"); return; }
+
+  updateBtn.disabled = true;
+  loading.classList.add("open");
+
+  const fd = new FormData();
+  fd.append("sellerPhone", sellerPhone);
+  fd.append("category", selectedCategory);
+  fd.append("title", title);
+  fd.append("price", price);
+  fd.append("discount", document.getElementById("discount").value);
+  fd.append("colors", document.getElementById("colors").value);
+  fd.append("sizes", document.getElementById("sizes").value);
+  fd.append("description", document.getElementById("description").value);
+
+  // Filter out nulls
+  const validExistingImages = existingImages.filter(u => u);
+  const validExistingVideos = existingVideos.filter(u => u);
+
+  fd.append("existingImages", JSON.stringify(validExistingImages));
+  fd.append("existingVideos", JSON.stringify(validExistingVideos));
+
+  newImageFiles.forEach(f => { if (f) fd.append("images", f); });
+  newVideoFiles.forEach(f => { if (f) fd.append("videos", f); });
+
+  try{
+    const res = await fetch(
+      `https://delight-backend--araindaniyalo2.replit.app/edit-product/${editItem.id}`,
+      {method: "PUT", body: fd}
+    );
+    const data = await res.json();
+    if(data.success){
+      document.getElementById("successBox").style.display = "block";
+      localStorage.removeItem("editItem");
+      localStorage.removeItem("selectedCategory");
+      setTimeout(() => { document.getElementById("successBox").style.display = "none"; }, 3000);
+    }else{
+      alert(data.message || "Update failed");
+    }
+  }catch{
+    alert("Server error");
+  }
+
+  updateBtn.disabled = false;
+  loading.classList.remove("open");
+});
+</script>
+<script>
+(function() {
+  const isDark = localStorage.getItem("darkMode") === "true";
+  if (isDark) document.documentElement.setAttribute("data-theme", "dark");
+})();
+</script>
+
+</body>
+</html>
