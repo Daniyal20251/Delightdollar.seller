@@ -1,40 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Homepage / Seller Portal -->
   <url>
     <loc>https://seller.delightpk.shop/</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- Seller Profile -->
   <url>
     <loc>https://seller.delightpk.shop/SellerProfile.html</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
+
+  <!-- Seller Panel -->
   <url>
-      <loc>https://seller.delightpk.shop/SellerPanel.html</loc>
-    <lastmod>2026-05-26</lastmod>
+    <loc>https://seller.delightpk.shop/SellerPanel.html</loc>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <priority>0.9</priority>
   </url>
+
+  <!-- Seller Orders -->
   <url>
     <loc>https://seller.delightpk.shop/sellerOrders.html</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
+
+  <!-- My Store -->
   <url>
     <loc>https://seller.delightpk.shop/myStore.html</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
+
+  <!-- Analytics -->
   <url>
     <loc>https://seller.delightpk.shop/Analytics.html</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
-  <url>
+
 </urlset>
