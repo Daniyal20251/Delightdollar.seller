@@ -219,32 +219,62 @@ function updateUIForPlan(plan) {
         <button class="btn-domain" onclick="checkDomainStatus()" style="margin-top:8px;">🔄 Check Status</button>
       `;
     }
-    // Approved but DNS setup not started yet
-    else if (reqStatus === 'approved' && setupStatus === 'not_started') {
-      domainContent.innerHTML = `
-        <div class="domain-status-approved">
-          <i class="fas fa-check-circle"></i>
-          <p style="color: #22c55e; font-weight: 700; margin-top: 8px;">✅ Domain Approved!</p>
-          <p class="domain-note" style="margin-top:5px;">Domain: <b>${domain}</b></p>
-        </div>
+// Approved but DNS setup not started yet
+else if (reqStatus === 'approved' && setupStatus === 'not_started') {
+  domainContent.innerHTML = `
+    <div class="domain-status-approved">
+      <i class="fas fa-check-circle"></i>
+      <p style="color: #22c55e; font-weight: 700; margin-top: 8px;">✅ Domain Approved!</p>
+      <p class="domain-note" style="margin-top:5px;">Domain: <b>${domain}</b></p>
+    </div>
 
-        <div class="domain-instructions" style="margin-top:15px; background: rgba(34, 197, 94, 0.08); border-color: #22c55e;">
-          <h5 style="color: #22c55e;"><i class="fas fa-cogs"></i> Setup DNS Records:</h5>
-          <ol>
-            <li>Login to your domain registrar (GoDaddy,Namecheap,etc)</li>
-            <li>Add Domain<b>A Record</b>: Type=A, Name=@, Value=<b style="color:#22c55e;">daniyal20251.github.io</b></li>
-            <li>Or add Subdomain<b>CNAME</b>: Type=CNAME, Name=my,etc, Value=<b style="color:#22c55e;">daniyal20251.github.io</b></li>
-            <li>Save DNS settings (takes 5-30 mins)</li>
-            <li>Click "I Have Configured DNS" below</li>
-          </ol>
-        </div>
+    <div class="domain-instructions" style="margin-top:15px; background: rgba(34, 197, 94, 0.08); border-color: #22c55e;">
+      <h5 style="color: #22c55e;"><i class="fas fa-cogs"></i> Setup DNS Records (GoDaddy / Namecheap):</h5>
 
-        <button class="btn-success" onclick="markSetupDone()" style="margin-top:10px;">
-          <i class="fas fa-check-double"></i> I Have Configured DNS
-        </button>
-        <p class="domain-note" style="margin-top:8px;">Admin will verify and activate your domain</p>
-      `;
-    }
+      <p style="margin: 10px 0 6px; font-weight: 600;">📌 Step 1 — Login to your domain registrar and open DNS Settings</p>
+
+      <p style="margin: 8px 0 4px; font-weight: 600;">🔷 Add 4 A Records (Root Domain <code>@</code>):</p>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <thead>
+          <tr style="background:rgba(34,197,94,0.15);">
+            <th style="padding:6px 8px; text-align:left;">Type</th>
+            <th style="padding:6px 8px; text-align:left;">Name / Host</th>
+            <th style="padding:6px 8px; text-align:left;">Value / Points To</th>
+            <th style="padding:6px 8px; text-align:left;">TTL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:5px 8px;">A</td><td>@</td><td><b style="color:#22c55e;">185.199.108.153</b></td><td>auto</td></tr>
+          <tr><td style="padding:5px 8px;">A</td><td>@</td><td><b style="color:#22c55e;">185.199.109.153</b></td><td>auto</td></tr>
+          <tr><td style="padding:5px 8px;">A</td><td>@</td><td><b style="color:#22c55e;">185.199.110.153</b></td><td>auto</td></tr>
+          <tr><td style="padding:5px 8px;">A</td><td>@</td><td><b style="color:#22c55e;">185.199.111.153</b></td><td>auto</td></tr>
+        </tbody>
+      </table>
+
+      <p style="margin: 12px 0 4px; font-weight: 600;">🔶 Add 1 CNAME Record (www subdomain):</p>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <thead>
+          <tr style="background:rgba(34,197,94,0.15);">
+            <th style="padding:6px 8px; text-align:left;">Type</th>
+            <th style="padding:6px 8px; text-align:left;">Name / Host</th>
+            <th style="padding:6px 8px; text-align:left;">Value / Points To</th>
+            <th style="padding:6px 8px; text-align:left;">TTL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:5px 8px;">CNAME</td><td>www</td><td><b style="color:#22c55e;">daniyal20251.github.io</b></td><td>auto</td></tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:12px; font-size:13px;">⏱️ DNS changes usually take <b>5–30 minutes</b> to propagate. Once done, click the button below.</p>
+    </div>
+
+    <button class="btn-success" onclick="markSetupDone()" style="margin-top:10px;">
+      <i class="fas fa-check-double"></i> I Have Configured DNS
+    </button>
+    <p class="domain-note" style="margin-top:8px;">Admin will verify and activate your domain</p>
+  `;
+}
     // Pending admin approval
     else if (reqStatus === 'pending' && domain) {
       domainContent.innerHTML = `
