@@ -316,7 +316,7 @@ window.onload = () => {
   // Render
   document.getElementById("details").innerHTML = `
     <h2>${product.title || "No Title"}</h2>
-    <p class="price">Rs ${product.price || "N/A"}</p>
+    <p class="price">Price: ${product.price || "Advance Paid"}</p>
 
     ${product.color ? `<div class="info-box">Color: ${product.color}</div>` : ""}
     ${product.size ? `<div class="info-box">Size: ${product.size}</div>` : ""}

@@ -2,7 +2,6 @@ let allProducts = [];
 
 // Elements
 const itemContainer = document.getElementById("itemContainer");
-const loading = document.getElementById("loading");
 const sellerNameEl = document.getElementById("sellerName");
 const sellerLogoEl = document.getElementById("sellerLogo");
 const searchInput = document.getElementById("searchInput");
@@ -15,16 +14,6 @@ const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
 // Recent searches
 let recentSearches = JSON.parse(localStorage.getItem("recentSearches")) || [];
 
-// Shuffle array (Fisher-Yates)
-function shuffleArray(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
 // Format price (remove non-digits)
 function parsePrice(str) {
   return parseInt(String(str).replace(/[^\d]/g, "")) || 0;
@@ -35,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sellerPhone = localStorage.getItem("sellerPhone");
 
   if (!sellerPhone) {
-    loading.textContent = "⚠️ Seller not found! Please login.";
+    itemContainer.innerHTML = `<p style="text-align:center;color:#777;grid-column:1/-1;padding:40px 0;">⚠️ Seller not found! Please login.</p>`;
     return;
   }
 
@@ -53,20 +42,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     const res = await fetch(`${API_BASE}/products/${sellerPhone}`);
     allProducts = await res.json();
 
-    loading.style.display = "none";
-
     if (!Array.isArray(allProducts) || !allProducts.length) {
-      itemContainer.innerHTML = `<p style="text-align:center;color:#777;width:100%;padding:40px 0;">No products found.</p>`;
+      renderProducts([]);
       return;
     }
 
-    // Shuffle once
-    allProducts = shuffleArray(allProducts);
+    // NO SHUFFLE — keep original order (newest first from API)
     renderProducts(allProducts);
 
   } catch (err) {
     console.error(err);
-    loading.textContent = "⚠️ Error loading products!";
+    itemContainer.innerHTML = `<p style="text-align:center;color:#f44336;grid-column:1/-1;padding:40px 0;">⚠️ Error loading products!</p>`;
   }
 });
 
@@ -79,71 +65,107 @@ async function incrementView(productId) {
   }
 }
 
-// Render products
-function renderProducts(list) {
-  itemContainer.innerHTML = "";
+// Create upload card (always first)
+function createUploadCard() {
+  const card = document.createElement("a");
+  card.href = "Seller Panel.html";
+  card.className = "upload-card";
+  card.innerHTML = `
+    <div class="upload-icon">
+      <i class="fas fa-plus"></i>
+    </div>
+    <span class="upload-label">Upload Product</span>
+    <span class="upload-sub">Tap to add new item</span>
+  `;
+  return card;
+}
 
-  list.forEach((item) => {
-    const card = document.createElement("div");
-    card.className = "item-card";
+// Create product card
+function createProductCard(item) {
+  const card = document.createElement("div");
+  card.className = "item-card";
 
-    const basePrice = parsePrice(item.price);
-    const discount = parsePrice(item.discount);
-    const finalPrice = basePrice - discount;
-    const views = item.views || 0;
+  const basePrice = parsePrice(item.price);
+  const discount = parsePrice(item.discount);
+  const finalPrice = basePrice - discount;
+  const views = item.views || 0;
 
-    card.innerHTML = `
-      <div class="views-badge">
-        <i class="fas fa-eye"></i>
-        <span>${views}</span>
-      </div>
-      <button class="delete-btn" title="Delete">&times;</button>
-      <img src="${item.images?.[0] || 'default.jpg'}" alt="${item.title}" loading="lazy">
+  card.innerHTML = `
+    <div class="views-badge">
+      <i class="fas fa-eye"></i>
+      <span>${views}</span>
+    </div>
+    <button class="delete-btn" title="Delete">&times;</button>
+    <img src="${item.images?.[0] || 'default.jpg'}" alt="${item.title}" loading="lazy">
+    <div class="card-body">
       <h3>${item.title}</h3>
       <div class="price-wrapper">
         ${discount > 0
-          ? `<span class="new-price">Rs. ${finalPrice}</span>
-             <span class="old-price">Rs. ${basePrice}</span>`
-          : `<span class="new-price">Rs. ${basePrice}</span>`
+          ? `<span class="new-price">Rs. ${finalPrice.toLocaleString()}</span>
+             <span class="old-price">Rs. ${basePrice.toLocaleString()}</span>`
+          : `<span class="new-price">Rs. ${basePrice.toLocaleString()}</span>`
         }
       </div>
-    `;
+    </div>
+  `;
 
-    // Click to edit (on image, title, price - NOT delete button)
-    const openEdit = () => {
-      incrementView(item.id);
-      localStorage.setItem("editItem", JSON.stringify(item));
-      window.location.href = "ItemEdit.html";
-    };
+  // Click to edit (image, title, price)
+  const openEdit = () => {
+    incrementView(item.id);
+    localStorage.setItem("editItem", JSON.stringify(item));
+    window.location.href = "ItemEdit.html";
+  };
 
-    card.querySelector("img").onclick = openEdit;
-    card.querySelector("h3").onclick = openEdit;
-    card.querySelector(".price-wrapper").onclick = openEdit;
+  card.querySelector("img").onclick = openEdit;
+  card.querySelector("h3").onclick = openEdit;
+  card.querySelector(".price-wrapper").onclick = openEdit;
 
-    // Delete product
-    card.querySelector(".delete-btn").addEventListener("click", async (e) => {
-      e.stopPropagation();
-      if (!confirm(`Delete "${item.title}"?`)) return;
+  // Delete product
+  card.querySelector(".delete-btn").addEventListener("click", async (e) => {
+    e.stopPropagation();
+    if (!confirm(`Delete "${item.title}"?`)) return;
 
-      try {
-        const res = await fetch(`${API_BASE}/products/${item.id}`, {
-          method: "DELETE"
-        });
-        const data = await res.json();
+    try {
+      const res = await fetch(`${API_BASE}/products/${item.id}`, { method: "DELETE" });
+      const data = await res.json();
 
-        if (data.success) {
-          allProducts = allProducts.filter(p => p.id !== item.id);
-          renderProducts(allProducts);
-        } else {
-          alert("⚠️ Failed to delete product");
-        }
-      } catch (err) {
-        console.error(err);
-        alert("⚠️ Error deleting product");
+      if (data.success) {
+        allProducts = allProducts.filter(p => p.id !== item.id);
+        renderProducts(allProducts);
+      } else {
+        alert("⚠️ Failed to delete product");
       }
-    });
+    } catch (err) {
+      console.error(err);
+      alert("⚠️ Error deleting product");
+    }
+  });
 
-    itemContainer.appendChild(card);
+  return card;
+}
+
+// Render products — upload card always first, then products (newest at top)
+function renderProducts(list) {
+  itemContainer.innerHTML = "";
+
+  // 1. Upload card — always first
+  itemContainer.appendChild(createUploadCard());
+
+  // 2. Products — no shuffle, original order preserved
+  if (!list.length) {
+    const msg = document.createElement("div");
+    msg.className = "not-found";
+    msg.innerHTML = `
+      <img src="Delight icons/not-found.png" alt="Not found">
+      <h3>No Products Yet</h3>
+      <p>Tap "Upload Product" to add your first item.</p>
+    `;
+    itemContainer.appendChild(msg);
+    return;
+  }
+
+  list.forEach(item => {
+    itemContainer.appendChild(createProductCard(item));
   });
 }
 
@@ -152,7 +174,7 @@ function renderRecentSearches() {
   recentList.innerHTML = "";
 
   if (recentSearches.length === 0) {
-    recentList.innerHTML = `<li style="color:#999;padding:10px 8px;">No recent searches</li>`;
+    recentList.innerHTML = `<li style="color:#999;padding:10px 4px;">No recent searches</li>`;
     return;
   }
 
@@ -164,7 +186,7 @@ function renderRecentSearches() {
   });
 }
 
-// Search panel - open on focus
+// Search panel — open on focus
 searchInput.addEventListener("focus", () => {
   renderRecentSearches();
   searchPanel.classList.add("active");
@@ -188,9 +210,11 @@ searchInput.addEventListener("keydown", (e) => {
 // Search function
 function searchItems() {
   const term = searchInput.value.trim().toLowerCase();
-  if (!term) return;
+  if (!term) {
+    renderProducts(allProducts);
+    return;
+  }
 
-  // Save to recent
   if (!recentSearches.includes(term)) {
     recentSearches.unshift(term);
     if (recentSearches.length > 6) recentSearches.pop();
@@ -208,17 +232,24 @@ function filterProducts(term) {
     p.title.toLowerCase().includes(term)
   );
 
+  itemContainer.innerHTML = "";
+  itemContainer.appendChild(createUploadCard());
+
   if (!matched.length) {
-    itemContainer.innerHTML = `
-      <div class="not-found">
-        <img src="Delight icons/not-found.png" alt="Not found">
-        <h3>Oops! Item Not Found.</h3>
-        <p>Try searching with a different keyword.</p>
-      </div>`;
+    const msg = document.createElement("div");
+    msg.className = "not-found";
+    msg.innerHTML = `
+      <img src="Delight icons/not-found.png" alt="Not found">
+      <h3>Oops! Item Not Found.</h3>
+      <p>Try searching with a different keyword.</p>
+    `;
+    itemContainer.appendChild(msg);
     return;
   }
 
-  renderProducts(matched);
+  matched.forEach(item => {
+    itemContainer.appendChild(createProductCard(item));
+  });
 }
 
 // Fill search and trigger

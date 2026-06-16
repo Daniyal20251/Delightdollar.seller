@@ -22,6 +22,7 @@
   --bg-filter: #fff;
   --bg-product-box: #fafafa;
   --bg-address: #fff7ef;
+  --bg-payment: #f0fff4;
   --text-primary: #333;
   --text-secondary: #555;
   --text-heading: #fff;
@@ -39,6 +40,7 @@
   --bg-filter: #1e1e3a;
   --bg-product-box: #1a1a2e;
   --bg-address: #1e1e3a;
+  --bg-payment: #0d1f0d;
   --text-primary: #e8e8f0;
   --text-secondary: #a0a0c0;
   --text-heading: #fff;
@@ -125,6 +127,79 @@ header {
   transition: border-color 0.4s ease;
 }
 .buyer-info p { color: var(--text-primary); }
+.small-muted { font-size: 12px; color: var(--text-secondary); margin-top: 4px; transition: color 0.4s ease; }
+
+/* Payment Proof Box */
+.payment-box { 
+  background: var(--bg-payment); 
+  padding:12px; 
+  border-radius:10px; 
+  margin-top:12px; 
+  border:1px solid #38a169; 
+  border-left:4px solid #38a169;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+.payment-box .payment-heading { 
+  font-weight:700; 
+  font-size:14px; 
+  color:#38a169; 
+  margin-bottom:8px; 
+  display:flex; 
+  align-items:center; 
+  gap:6px; 
+}
+.payment-box .payment-heading i { font-size:16px; }
+.payment-box .payment-detail { 
+  font-size:13px; 
+  color: var(--text-primary); 
+  margin:4px 0; 
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center;
+}
+.payment-box .payment-detail strong { color: var(--text-primary); }
+.payment-screenshot { 
+  width:100%; 
+  max-height:200px; 
+  object-fit:contain; 
+  border-radius:8px; 
+  margin-top:8px; 
+  border:1px solid var(--border-color); 
+  cursor:pointer; 
+  transition: transform 0.2s ease;
+}
+.payment-screenshot:hover { transform: scale(1.02); }
+.payment-status-badge {
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+}
+.payment-status-pending { background:#fef3c7; color:#92400e; }
+.payment-status-verified { background:#d1fae5; color:#065f46; }
+.payment-status-rejected { background:#fee2e2; color:#991b1b; }
+
+/* Invoice Button */
+.invoice-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:linear-gradient(135deg,#ff6a00,#ff3d00);
+  color:#fff;
+  border:none;
+  padding:8px 14px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:8px;
+  transition:0.2s ease;
+  text-decoration:none;
+}
+.invoice-btn:hover { transform:scale(1.05); box-shadow:0 3px 10px rgba(255,106,0,0.3); }
+.invoice-btn i { font-size:13px; }
 
 /* Status buttons & badges */
 .status-btns { display:flex; justify-content:space-between; margin-top:12px; gap:8px; flex-wrap:wrap; }
@@ -227,6 +302,44 @@ header {
 .bar a.active i {
   transform: translateY(-2px);
 }
+
+/* Image Modal */
+.img-modal {
+  display:none;
+  position:fixed;
+  top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.85);
+  z-index:10000;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+.img-modal img { max-width:90%; max-height:80%; border-radius:8px; }
+.img-modal .close-modal {
+  position:absolute;
+  top:20px; right:20px;
+  color:#fff;
+  font-size:28px;
+  cursor:pointer;
+  background:none; border:none;
+}
+.img-modal .modal-caption {
+  color:#fff;
+  margin-top:15px;
+  font-size:14px;
+}
+
+/* No payment box */
+.no-payment-box {
+  background: var(--bg-address);
+  padding:10px 12px;
+  border-radius:8px;
+  margin-top:10px;
+  font-size:13px;
+  color: var(--text-secondary);
+  text-align:center;
+  border:1px dashed var(--border-color);
+}
 </style>
 </head>
 <body>
@@ -240,6 +353,13 @@ header {
   <div id="loading">Loading orders...</div>
 </div>
 
+<!-- Image Modal for Payment Screenshot -->
+<div class="img-modal" id="imgModal" onclick="closeModal()">
+  <button class="close-modal" onclick="closeModal()">&times;</button>
+  <img id="modalImg" src="" alt="Payment Proof">
+  <div class="modal-caption" id="modalCaption">Payment Screenshot</div>
+</div>
+
 <div class="bar">
   <a href="index.html"><i class="fas fa-user"></i>Profile</a>
   <a href="myStore.html"><i class="fas fa-store"></i>Store</a>
@@ -251,6 +371,7 @@ header {
   </a>
   <a href="Analytics.html"><i class="fas fa-chart-line"></i>Analytics</a>
 </div>
+
 <script>
 // ===== DARK MODE INIT =====
 (function() {
@@ -261,8 +382,10 @@ header {
 const seller = JSON.parse(localStorage.getItem("seller"));
 if(!seller){ alert("Please login first!"); window.location.href="login.html"; }
 
+const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
 const statuses = ["Pending","Shipped","Delivered","Cancelled"];
 let currentFilter = "Pending";
+let sellerPayments = []; // Cache payments
 
 const filterBar = document.getElementById("filterBar");
 statuses.forEach(status => {
@@ -280,11 +403,50 @@ function updateFilterButtons(){
   });
 }
 
+// Fetch all payments for this seller
+async function loadSellerPayments() {
+  try {
+    const res = await fetch(`${API_BASE}/seller/payments/${seller.phone}`);
+    const data = await res.json();
+    if (data.success) {
+      sellerPayments = data.payments || [];
+    }
+  } catch (err) {
+    console.error("Error loading payments:", err);
+    sellerPayments = [];
+  }
+}
+
+// Get payment for a specific order
+function getPaymentForOrder(orderId) {
+  return sellerPayments.find(p => p.orderId === orderId);
+}
+
+// Open image modal
+function openModal(src, caption) {
+  const modal = document.getElementById("imgModal");
+  const img = document.getElementById("modalImg");
+  const cap = document.getElementById("modalCaption");
+  img.src = src;
+  cap.innerText = caption || "Payment Screenshot";
+  modal.style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("imgModal").style.display = "none";
+}
+
 async function loadOrders(){
   const container = document.getElementById("orderList");
   container.innerHTML = "<div id='loading'>Loading...</div>";
+
+  // Load payments first (or use cached)
+  if (sellerPayments.length === 0) {
+    await loadSellerPayments();
+  }
+
   try{
-    const res = await fetch(`https://delight-backend--araindaniyalo2.replit.app/seller-orders/${seller.phone}`);
+    const res = await fetch(`${API_BASE}/seller-orders/${seller.phone}`);
     let orders = await res.json();
     if(!orders || orders.length===0){ container.innerHTML="<p style='text-align:center;color:var(--text-secondary);'>📭 No orders yet</p>"; return; }
 
@@ -293,20 +455,30 @@ async function loadOrders(){
 
     let filteredOrders = orders.filter(o => o.status === currentFilter);
     container.innerHTML = "";
+
+    if (filteredOrders.length === 0) {
+      container.innerHTML = `<p style='text-align:center;color:var(--text-secondary);margin-top:20px;'>📭 No ${currentFilter} orders</p>`;
+      return;
+    }
+
     filteredOrders.forEach(order => {
       const div = document.createElement("div"); div.className = "order-card";
       const product = order.product || {};
       const imgUrl = product.image || (product.images?.[0] || "no-img.jpg");
+      const qty = product.qty || product.quantity || 1;
 
       const buyerDiv = document.createElement("div"); buyerDiv.className = "buyer-info";
       buyerDiv.innerHTML = `<p><strong>Buyer:</strong> ${order.buyerName || "N/A"}</p>
-                            <p><strong>Phone:</strong> ${order.buyerPhone || "N/A"}</p>`;
+                            <p><strong>Phone:</strong> ${order.buyerPhone || "N/A"}</p>
+                            <div class="small-muted">Order ID: ${order.id}</div>
+                            <div class="small-muted">Placed: ${new Date(order.createdAt || Date.now()).toLocaleString('en-PK', { dateStyle: 'medium', timeStyle: 'short' })}</div>`;
       div.appendChild(buyerDiv);
 
       const productBox = document.createElement("div"); productBox.className = "product-box";
       productBox.innerHTML = `<img src="${imgUrl}" alt="Product">
                               <div><p><strong>${product.title || "Unknown Product"}</strong></p>
-                              <p>Price: Rs ${product.price || "N/A"}</p></div>`;
+                              <p>Price: ${product.price || "Advance Paid"}</p>
+                              <div class="small-muted">Qty: ${qty}</div></div>`;
       productBox.onclick = ()=>{ localStorage.setItem("selectedItem",JSON.stringify(product)); window.location.href="itemDetails.html"; };
       div.appendChild(productBox);
 
@@ -321,6 +493,43 @@ async function loadOrders(){
         div.appendChild(addrDiv);
       }
 
+      // ===== PAYMENT PROOF SECTION =====
+      const payment = getPaymentForOrder(order.id);
+
+      if (payment) {
+        const paymentBox = document.createElement("div");
+        paymentBox.className = "payment-box";
+
+        const statusClass = payment.status === 'verified' ? 'payment-status-verified' : 
+                           payment.status === 'rejected' ? 'payment-status-rejected' : 'payment-status-pending';
+
+        let paymentHTML = `<div class="payment-heading"><i class="fas fa-receipt"></i> Payment Proof</div>`;
+        paymentHTML += `<div class="payment-detail"><span>Method:</span> <strong>${payment.paymentMethod?.toUpperCase() || 'N/A'}</strong></div>`;
+        paymentHTML += `<div class="payment-detail"><span>Amount:</span> <strong>Rs. ${payment.amount || 0}</strong></div>`;
+        paymentHTML += `<div class="payment-detail"><span>Transaction ID:</span> <strong>${payment.transactionId || 'N/A'}</strong></div>`;
+        paymentHTML += `<div class="payment-detail"><span>Submitted:</span> <strong>${new Date(payment.submittedAt).toLocaleString('en-PK', { dateStyle: 'short', timeStyle: 'short' })}</strong></div>`;
+
+        if (payment.screenshotUrl) {
+          paymentHTML += `<img class="payment-screenshot" src="${payment.screenshotUrl}" alt="Payment Screenshot" onclick="event.stopPropagation(); openModal('${payment.screenshotUrl}', 'Payment Screenshot - ${payment.paymentMethod?.toUpperCase()}')">`;
+        }
+
+        // Invoice button
+        paymentHTML += `<div style="text-align:center;">
+          <button class="invoice-btn" onclick="viewInvoice(${payment.id})">
+            <i class="fas fa-file-invoice"></i> View Invoice
+          </button>
+        </div>`;
+
+        paymentBox.innerHTML = paymentHTML;
+        div.appendChild(paymentBox);
+      } else {
+        // No payment submitted yet
+        const noPaymentDiv = document.createElement("div");
+        noPaymentDiv.className = "no-payment-box";
+        noPaymentDiv.innerHTML = `<i class="fas fa-clock" style="margin-right:5px;"></i> Cash On Delivery`;
+        div.appendChild(noPaymentDiv);
+      }
+
       if(order.status === "Pending" || order.status === "Shipped"){
           const statusDiv = document.createElement("div"); 
           statusDiv.className = "status-btns";
@@ -333,7 +542,7 @@ async function loadOrders(){
               btn.onclick = async ()=>{
                   if(order.status !== s){
                       try{
-                          const res = await fetch(`https://delight-backend--araindaniyalo2.replit.app/update-order/${order.id}`,{
+                          const res = await fetch(`${API_BASE}/update-order/${order.id}`,{
                               method:"PUT",
                               headers:{"Content-Type":"application/json"},
                               body:JSON.stringify({status:s})
@@ -362,7 +571,92 @@ async function loadOrders(){
   }catch(err){ console.error(err); container.innerHTML="<p style='text-align:center;color:red;'>Error loading orders.</p>"; }
 }
 
-window.onload = loadOrders;
+// View Invoice Function
+async function viewInvoice(paymentId) {
+  try {
+    const res = await fetch(`${API_BASE}/invoice/${paymentId}`);
+    const data = await res.json();
+    if (data.success && data.invoice) {
+      const inv = data.invoice;
+      const order = inv.order;
+      const product = order?.product || {};
+
+      // Create invoice modal content
+      const invoiceHTML = `
+        <div style="background:#fff; padding:20px; border-radius:12px; max-width:400px; width:90%; max-height:80vh; overflow-y:auto; font-family:'Poppins',sans-serif;">
+          <div style="text-align:center; border-bottom:2px solid #ff6a00; padding-bottom:15px; margin-bottom:15px;">
+            <h2 style="color:#ff6a00; margin:0;"><i class="fas fa-file-invoice"></i> Invoice</h2>
+            <p style="color:#666; font-size:12px; margin:5px 0 0;">${inv.invoiceNumber}</p>
+          </div>
+
+          <div style="margin-bottom:15px;">
+            <p style="font-size:12px; color:#888; margin:0;">Seller</p>
+            <p style="font-weight:700; margin:2px 0;">${inv.seller.name || 'N/A'}</p>
+            <p style="font-size:12px; color:#666; margin:0;">${inv.seller.phone}</p>
+          </div>
+
+          <div style="margin-bottom:15px;">
+            <p style="font-size:12px; color:#888; margin:0;">Buyer</p>
+            <p style="font-weight:700; margin:2px 0;">${inv.buyer.name || 'N/A'}</p>
+            <p style="font-size:12px; color:#666; margin:0;">${inv.buyer.phone}</p>
+          </div>
+
+          <div style="background:#f8f8f8; padding:12px; border-radius:8px; margin-bottom:15px;">
+            <p style="font-size:12px; color:#888; margin:0 0 5px;">Order Details</p>
+            <p style="font-weight:700; margin:2px 0; font-size:14px;">${product.title || 'Product'}</p>
+            <p style="font-size:12px; color:#666; margin:0;">Order ID: ${order?.id || 'N/A'}</p>
+            <p style="font-size:12px; color:#666; margin:0;">Address: ${order?.address || 'N/A'}</p>
+          </div>
+
+          <div style="background:#fff7ef; padding:12px; border-radius:8px; margin-bottom:15px; border-left:3px solid #ff6a00;">
+            <p style="font-size:12px; color:#888; margin:0 0 5px;">Payment Details</p>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin:3px 0;">
+              <span>Method:</span> <strong>${inv.payment.method?.toUpperCase()}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin:3px 0;">
+              <span>Transaction ID:</span> <strong>${inv.payment.transactionId}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin:3px 0;">
+              <span>Amount:</span> <strong style="color:#ff6a00; font-size:16px;">Rs. ${inv.payment.amount}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin:3px 0;">
+              <span>Status:</span> <strong>${inv.status}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin:3px 0;">
+              <span>Submitted:</span> <strong>${new Date(inv.payment.submittedAt).toLocaleString('en-PK')}</strong>
+            </div>
+          </div>
+
+          ${inv.payment.screenshotUrl ? `<div style="text-align:center; margin-bottom:15px;">
+            <img src="${inv.payment.screenshotUrl}" style="max-width:100%; max-height:150px; border-radius:8px; border:1px solid #ddd; cursor:pointer;" onclick="openModal('${inv.payment.screenshotUrl}', 'Invoice Payment Proof')" alt="Payment Proof">
+          </div>` : ''}
+
+          <div style="text-align:center; margin-top:15px;">
+            <button onclick="document.getElementById('invoiceModal').remove()" style="background:linear-gradient(135deg,#ff6a00,#ff3d00); color:#fff; border:none; padding:10px 25px; border-radius:20px; font-weight:700; cursor:pointer;">Close</button>
+          </div>
+        </div>
+      `;
+
+      // Create modal
+      const modal = document.createElement("div");
+      modal.id = "invoiceModal";
+      modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10001; display:flex; justify-content:center; align-items:center; padding:20px;";
+      modal.innerHTML = invoiceHTML;
+      modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
+      document.body.appendChild(modal);
+    } else {
+      alert("Invoice not found!");
+    }
+  } catch (err) {
+    console.error("Invoice error:", err);
+    alert("Error loading invoice!");
+  }
+}
+
+window.onload = async () => {
+  await loadSellerPayments();
+  loadOrders();
+};
 
   const page = location.pathname.split("/").pop();
 

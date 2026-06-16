@@ -1198,3 +1198,305 @@ input[type="number"]:focus {
   background: var(--border-input);
   border-radius: 4px;
 }
+
+/* ===== SETTINGS SECTIONS (Payment / KYC) ===== */
+.settings-section {
+  margin: 18px 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border-input);
+  background: var(--bg-input);
+}
+.settings-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  background: linear-gradient(135deg, rgba(239, 108, 0, 0.08), rgba(255, 106, 0, 0.04));
+  transition: all 0.3s ease;
+  user-select: none;
+}
+.settings-section-header:hover {
+  background: linear-gradient(135deg, rgba(239, 108, 0, 0.12), rgba(255, 106, 0, 0.06));
+}
+.settings-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.settings-section-title i {
+  color: var(--text-heading);
+  font-size: 16px;
+}
+.settings-section-header .toggle-arrow.open {
+  transform: rotate(180deg);
+}
+.settings-section-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.settings-section-body.open {
+  max-height: 2000px;
+}
+.settings-section-body > * {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.settings-section-body label:first-of-type {
+  margin-top: 16px;
+}
+.settings-section-body .btn-primary {
+  margin-bottom: 16px;
+}
+.settings-section-body label {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.settings-section-body > input[type="text"],
+.settings-section-body > input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-input);
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  outline: none;
+}
+.settings-section-body > input[type="text"]:focus,
+.settings-section-body > input[type="number"]:focus {
+  border-color: #ef6c00;
+  box-shadow: 0 0 0 3px rgba(239, 108, 0, 0.15);
+}
+
+/* ===== PAYMENT CARDS ===== */
+.payment-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-input);
+  border-radius: 12px;
+  padding: 14px;
+  margin: 12px 16px;
+}
+.payment-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.payment-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
+  padding: 2px;
+}
+.payment-logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #d6336c, #f06595);
+  color: #fff;
+  font-size: 16px;
+}
+.payment-card label {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.payment-card input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-input);
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  outline: none;
+}
+.payment-card input[type="text"]:focus {
+  border-color: #ef6c00;
+  box-shadow: 0 0 0 3px rgba(239, 108, 0, 0.15);
+}
+
+/* ===== QR / CNIC UPLOAD BOXES ===== */
+.qr-upload-box {
+  width: 140px;
+  height: 140px;
+  border: 2px dashed var(--border-input);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  margin: 0 auto;
+  text-align: center;
+  background: var(--bg-input);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+.qr-upload-box:hover {
+  border-color: var(--text-heading);
+}
+.qr-upload-box i {
+  font-size: 26px;
+  color: var(--text-secondary);
+}
+.qr-upload-box span {
+  font-size: 11px;
+  color: var(--text-secondary);
+  padding: 0 8px;
+}
+.qr-upload-box img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.qr-upload-box.has-image i,
+.qr-upload-box.has-image span {
+  display: none;
+}
+
+.kyc-cnic-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+.kyc-cnic-box {
+  flex: 1;
+}
+.kyc-cnic-box label {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.cnic-upload-box {
+  width: 100%;
+  aspect-ratio: 16/10;
+  border: 2px dashed var(--border-input);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  text-align: center;
+  background: var(--bg-input);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+.cnic-upload-box:hover {
+  border-color: var(--text-heading);
+}
+.cnic-upload-box i {
+  font-size: 22px;
+  color: var(--text-secondary);
+}
+.cnic-upload-box span {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.cnic-upload-box img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cnic-upload-box.has-image i,
+.cnic-upload-box.has-image span {
+  display: none;
+}
+
+.kyc-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 12px 0;
+  line-height: 1.6;
+}
+.kyc-note i {
+  color: var(--text-heading);
+  margin-right: 4px;
+}
+
+.kyc-rejected-note {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px dashed #ef4444;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 16px 16px 0;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+.kyc-status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.kyc-status-badge.pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.kyc-status-badge.approved {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+.kyc-status-badge.rejected {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.kyc-status-badge.not_submitted {
+  background: rgba(160, 160, 192, 0.15);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-input);
+}
+
+@media (max-width: 360px) {
+  .kyc-cnic-row { flex-direction: column; }
+  .qr-upload-box { width: 120px; height: 120px; }
+}
+
+/* ===== SECURITY LOCK MESSAGE (Advance Delivery & Payment) ===== */
+.security-lock-msg {
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px dashed var(--premium-purple);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--premium-purple);
+  margin: 0 0 12px;
+  line-height: 1.6;
+}
+.security-lock-msg i {
+  margin-right: 6px;
+}
+.security-lock-msg a {
+  color: var(--premium-purple);
+  font-weight: 700;
+  text-decoration: underline;
+}

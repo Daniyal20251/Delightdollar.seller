@@ -116,7 +116,6 @@
 
 <body>
 <!-- Theme Toggle -->
-<!-- Theme Toggle -->
 <div class="theme-switch-wrapper">
   <div class="theme-switch" id="themeSwitch" onclick="toggleTheme()">
     <div class="knob" id="themeKnob">☀️</div>
@@ -151,10 +150,136 @@
 
   <input type="file" id="file-upload" accept="image/*" style="display:none">
 
-  <label for="deliveryInput">Delivery Charges (Rs.)</label>
+  <label for="deliveryInput">COD Delivery Charges (Rs.)</label>
   <input type="number" id="deliveryInput" placeholder="200">
 
+  <!-- ===== ADVANCE DELIVERY — PREMIUM + KYC APPROVED ONLY ===== -->
+  <div id="advanceDeliveryWrapper" style="display:none;">
+    <label for="advanceDeliveryInput">Advance Delivery Charges (Rs.)</label>
+    <input type="number" id="advanceDeliveryInput" placeholder="150">
+    <div id="advanceLockMsg" class="security-lock-msg" style="display:none;"></div>
+  </div>
+
   <button class="btn-primary" onclick="updateProfile()">💾 Save & Continue</button>
+
+  <!-- ===== PAYMENT METHODS SECTION ===== -->
+  <div class="settings-section" id="paymentSection">
+    <div class="settings-section-header" onclick="toggleSection('paymentBody', 'paymentArrow')">
+      <div class="settings-section-title">
+        <i class="fas fa-wallet"></i>
+        <span>Payment Methods</span>
+      </div>
+      <i class="fas fa-chevron-down toggle-arrow" id="paymentArrow"></i>
+    </div>
+    <div class="settings-section-body" id="paymentBody">
+
+      <!-- Payment Lock Message -->
+      <div id="paymentLockMsg" class="security-lock-msg" style="display:none; margin:12px 16px 4px;"></div>
+
+      <!-- EasyPaisa -->
+      <div class="payment-card">
+        <div class="payment-card-header">
+          <img src="Delight icons/Easypaisa.png" alt="EasyPaisa" class="payment-logo" onerror="this.style.display='none'">
+          <span>EasyPaisa</span>
+        </div>
+        <label for="easypaisaBusinessName">Business Name</label>
+        <input type="text" id="easypaisaBusinessName" placeholder="e.g. Raast Account Name">
+
+        <label for="easypaisaAccountNumber">Raast Till Number</label>
+        <input type="text" id="easypaisaAccountNumber" placeholder="e.g. Enter the 9 digits">
+
+        <label>QR Code</label>
+        <div class="qr-upload-box" id="easypaisaQrBox" onclick="document.getElementById('easypaisaQrInput').click()">
+          <i class="fas fa-qrcode"></i>
+          <span>Tap to upload QR code</span>
+          <img id="easypaisaQrPreview" style="display:none;">
+        </div>
+        <input type="file" id="easypaisaQrInput" accept="image/*" style="display:none">
+      </div>
+
+      <!-- JazzCash -->
+      <div class="payment-card">
+        <div class="payment-card-header">
+          <i class="fas fa-mobile-screen-button payment-logo-icon"></i>
+          <span>JazzCash</span>
+        </div>
+        <label for="jazzcashBusinessName">Business Name</label>
+        <input type="text" id="jazzcashBusinessName" placeholder="e.g. Raast Account Name">
+
+        <label for="jazzcashAccountNumber">Raast Till Number</label>
+        <input type="text" id="jazzcashAccountNumber" placeholder="e.g. Enter the 9 digits">
+
+        <label>QR Code</label>
+        <div class="qr-upload-box" id="jazzcashQrBox" onclick="document.getElementById('jazzcashQrInput').click()">
+          <i class="fas fa-qrcode"></i>
+          <span>Tap to upload QR code</span>
+          <img id="jazzcashQrPreview" style="display:none;">
+        </div>
+        <input type="file" id="jazzcashQrInput" accept="image/*" style="display:none">
+      </div>
+
+      <button class="btn-primary" onclick="updateProfile()">💾 Save Payment Methods</button>
+    </div>
+  </div>
+
+  <!-- ===== SELLER KYC SECTION ===== -->
+  <div class="settings-section" id="kycSection">
+    <div class="settings-section-header" id="kycSectionHeader" onclick="toggleKycSection()">
+      <div class="settings-section-title">
+        <i class="fas fa-id-card"></i>
+        <span>Identity Verification (KYC)</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="kyc-status-badge" id="kycStatusBadge" style="display:none;"></span>
+        <i class="fas fa-lock kyc-lock-icon" id="kycLockIcon" style="display:none; color: #22c55e; font-size: 14px;"></i>
+        <i class="fas fa-chevron-down toggle-arrow" id="kycArrow"></i>
+      </div>
+    </div>
+    <div class="settings-section-body" id="kycBody">
+
+      <div id="kycRejectedNote" class="kyc-rejected-note" style="display:none;"></div>
+
+      <label for="kycBusinessName">Full Name</label>
+      <input type="text" id="kycBusinessName" placeholder="e.g. Full Name">
+
+      <label for="kycPhone">Phone Number</label>
+      <input type="text" id="kycPhone" placeholder="e.g. 03001234567">
+
+      <div class="kyc-cnic-row">
+        <div class="kyc-cnic-box">
+          <label>CNIC Front</label>
+          <div class="cnic-upload-box" id="cnicFrontBox" onclick="document.getElementById('cnicFrontInput').click()">
+            <i class="fas fa-id-card-alt"></i>
+            <span>Upload Front</span>
+            <img id="cnicFrontPreview" style="display:none;">
+          </div>
+          <input type="file" id="cnicFrontInput" accept="image/*" style="display:none">
+        </div>
+        <div class="kyc-cnic-box">
+          <label>CNIC Back</label>
+          <div class="cnic-upload-box" id="cnicBackBox" onclick="document.getElementById('cnicBackInput').click()">
+            <i class="fas fa-id-card-alt"></i>
+            <span>Upload Back</span>
+            <img id="cnicBackPreview" style="display:none;">
+          </div>
+          <input type="file" id="cnicBackInput" accept="image/*" style="display:none">
+        </div>
+      </div>
+
+      <p class="kyc-note"><i class="fas fa-info-circle"></i> After submitting your details, your identity will be verified through <b>NADRA Verification</b> or <b>Manual Verification.</b></p>
+
+      <div id="kycPendingMsg" style="display:none; background:rgba(245,158,11,0.12); border:1px solid #f59e0b; border-radius:10px; padding:12px 14px; margin:10px 0; font-size:13px; color:#f59e0b;">
+        <i class="fas fa-clock"></i> <b>Verification Under Review.</b> Your identity is being verified via NADRA Verification or Manual Verification. Please wait for approval.
+      </div>
+      <div id="kycApprovedMsg" style="display:none; background:rgba(34,197,94,0.12); border:1px solid #22c55e; border-radius:10px; padding:12px 14px; margin:10px 0; font-size:13px; color:#22c55e;">
+        <i class="fas fa-check-circle"></i> <b>Identity Verified!</b> Your payment methods (EasyPaisa & JazzCash) are now unlocked.
+      </div>
+
+      <button class="btn-kyc-submit" id="kycSubmitBtn" onclick="submitKyc()" style="width:100%; padding:13px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; margin-top:8px; letter-spacing:0.3px;">
+        <i class="fas fa-id-card"></i> Submit for Verification
+      </button>
+    </div>
+  </div>
 
   <div class="store-link-box" id="storeLinkBox" style="display:none;">
     <p>🔗 Your Store Link</p>
