@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <title>Choose Plan - Delightpk</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="subscription.css"
+<link rel="stylesheet" href="subscription.css">
 </head>
 <body>
 
@@ -27,14 +27,17 @@
     <div class="plan-card plan-free">
       <div class="plan-icon"><i class="fas fa-store"></i></div>
       <div class="plan-name">Free Seller</div>
-      <div class="plan-price">Rs. 0<span>/month</span></div>
+      <div class="plan-price" id="freePrice">Rs. 0<span>/month</span></div>
       <div class="plan-billing">Forever free</div>
       <ul class="features-list">
         <li><i class="fas fa-check"></i> Basic Store Profile</li>
         <li><i class="fas fa-check"></i> Limited Product Uploads</li>
         <li><i class="fas fa-check"></i> Order Management</li>
+        <li><i class="fas fa-check"></i> Delight Chat</li>
+        <li><i class="fas fa-check"></i> Rating Star & Reviews</li>
         <li><i class="fas fa-check"></i> Standard Store Link</li>
         <li><i class="fas fa-lock"></i> Ads Locked</li>
+        <li><i class="fas fa-lock"></i> Advance Payment</li>
         <li><i class="fas fa-times"></i> Domain connection</li>
         <li><i class="fas fa-times"></i> Analytics Chart Dashboard</li>
         <li><i class="fas fa-times"></i> Premium Badge</li>
@@ -49,11 +52,18 @@
       <div class="badge-popular">⭐ RECOMMENDED</div>
       <div class="plan-icon"><i class="fas fa-crown"></i></div>
       <div class="plan-name">Premium Seller</div>
-      <div class="plan-price">Rs. 999<span>/month</span></div>
-      <div class="plan-billing">Billed monthly via EasyPaisa</div>
+      <div class="plan-price-wrapper">
+        <div class="plan-old-price" id="monthlyOldPrice"></div>
+        <div class="plan-price" id="monthlyPrice"></div>
+      </div>
+      <div class="plan-billing" id="monthlyBilling"></div>
       <ul class="features-list">
         <li><i class="fas fa-check"></i>All Features</li>
         <li><i class="fas fa-check"></i> <strong>7 Ads Unlocked</strong></li>
+        <li><i class="fas fa-check"></i> Delight Chat</li>
+        <li><i class="fas fa-check"></i> Rating Star & Reviews</li>
+        <li><i class="fas fa-check"></i> Advance Payment</li>
+        <li><i class="fas fa-check"></i> Connect Easypaisa & Jazzcash Raast</li>
         <li><i class="fas fa-check"></i> Domain connection</li>
         <li><i class="fas fa-check"></i> Order Management</li>
         <li><i class="fas fa-check"></i> Analytics Chart Dashboard</li>
@@ -64,18 +74,25 @@
         <i class="fas fa-crown"></i> Go Premium
       </button>
     </div>
-  
+
     <!-- YEARLY PLAN -->
     <div class="plan-card plan-yearly">
       <div class="badge-popular">💎 BEST VALUE</div>
       <div class="plan-icon"><i class="fas fa-gem"></i></div>
       <div class="plan-name">Yearly Premium</div>
-      <div class="plan-price">Rs. 9,999<span>/year</span></div>
-      <div class="plan-billing">Billed yearly via EasyPaisa</div>
+      <div class="plan-price-wrapper">
+        <div class="plan-old-price" id="yearlyOldPrice"></div>
+        <div class="plan-price" id="yearlyPrice"></div>
+      </div>
+      <div class="plan-billing" id="yearlyBilling"></div>
       <ul class="features-list">
         <li><i class="fas fa-check"></i>All Features</li>
-        <li><i class="fas fa-check"></i> <strong>Save Rs. 1,989/year</strong></li>
+        <li><i class="fas fa-check"></i> <strong id="yearlySaveText"></strong></li>
         <li><i class="fas fa-check"></i> <strong>7 Ads Unlocked</strong></li>
+        <li><i class="fas fa-check"></i> Delight Chat</li>
+        <li><i class="fas fa-check"></i> Rating Star & Reviews</li>
+        <li><i class="fas fa-check"></i> Advance Payment</li>
+        <li><i class="fas fa-check"></i> Connect Easypaisa & Jazzcash Raast</li>
         <li><i class="fas fa-check"></i> Domain connection</li>
         <li><i class="fas fa-check"></i> Order Management</li>
         <li><i class="fas fa-check"></i> Analytics Chart Dashboard</li>
@@ -117,7 +134,7 @@
       1. Open EasyPaisa app<br>
       2. Tap <strong>Scan QR</strong><br>
       3. Tap <strong>Enter till number</strong><br>
-      4. Enter amount: <strong>Rs. 999</strong><br>
+      4. Enter amount: <strong id="monthlyPayAmount"></strong><br>
       5. After payment, enter your details below
     </div>
 
@@ -170,7 +187,7 @@
       1. Open EasyPaisa app<br>
       2. Tap <strong>Scan QR</strong><br>
       3. Tap <strong>Enter till number</strong><br>
-      4. Enter amount: <strong>Rs. 9,999</strong><br>
+      4. Enter amount: <strong id="yearlyPayAmount"></strong><br>
       5. After payment, enter your details below
     </div>
 
@@ -192,12 +209,53 @@
       <i class="fas fa-arrow-left"></i> Back to Plans
     </a>
   </div>
-
-
+</div>
 
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
+// ═══════════════════════════════════════════════════════════
+// 🎯 SIRF YAHAN PERCENTAGE LIKHO — BAQUI SAB AUTO CALCULATE
+// ═══════════════════════════════════════════════════════════
+const DISCOUNT_PERCENT = 30;   // <-- 🔥 Yahan 30% ya koi bhi % likho
+// ═══════════════════════════════════════════════════════════
+
+// Base prices (without discount)
+const BASE_MONTHLY = 999;
+const BASE_YEARLY  = 9999;
+
+// Auto-calculate discounted prices
+function calcDiscount(price, percent) {
+  return Math.round(price - (price * percent / 100));
+}
+
+const MONTHLY_PRICE = calcDiscount(BASE_MONTHLY, DISCOUNT_PERCENT);
+const YEARLY_PRICE  = calcDiscount(BASE_YEARLY,  DISCOUNT_PERCENT);
+const YEARLY_SAVE   = (BASE_MONTHLY * 12) - YEARLY_PRICE;
+
+// Format currency
+function fmt(n) {
+  return 'Rs. ' + n.toLocaleString('en-IN');
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER PRICES ON PAGE LOAD
+// ═══════════════════════════════════════════════════════════
+(function renderPrices() {
+  // Monthly Plan
+  document.getElementById('monthlyOldPrice').textContent = fmt(BASE_MONTHLY);
+  document.getElementById('monthlyPrice').innerHTML    = fmt(MONTHLY_PRICE) + '<span>/month</span>';
+  document.getElementById('monthlyBilling').textContent = 'Billed monthly via EasyPaisa' + (DISCOUNT_PERCENT > 0 ? ' • ' + DISCOUNT_PERCENT + '% OFF' : '');
+  document.getElementById('monthlyPayAmount').textContent = fmt(MONTHLY_PRICE);
+
+  // Yearly Plan
+  document.getElementById('yearlyOldPrice').textContent = fmt(BASE_YEARLY);
+  document.getElementById('yearlyPrice').innerHTML      = fmt(YEARLY_PRICE) + '<span>/year</span>';
+  document.getElementById('yearlyBilling').textContent  = 'Billed yearly via EasyPaisa' + (DISCOUNT_PERCENT > 0 ? ' • ' + DISCOUNT_PERCENT + '% OFF' : '');
+  document.getElementById('yearlySaveText').textContent = 'Save ' + fmt(YEARLY_SAVE) + '/year';
+  document.getElementById('yearlyPayAmount').textContent = fmt(YEARLY_PRICE);
+})();
+
 const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
 const seller = JSON.parse(localStorage.getItem("seller"));
 if(!seller) window.location.href = "login.html";
@@ -216,7 +274,6 @@ function selectFree() {
   showToast("✅ Free Plan Active", "Welcome to Delight.pk! You can upgrade anytime.", "fa-store");
   setTimeout(() => window.location.href = "index.html", 1500);
 }
-
 
 function showYearlyPaymentModal() {
   document.getElementById('yearlyPaymentModal').classList.add('active');
@@ -254,7 +311,7 @@ async function verifyYearlyPayment() {
         transactionId: tid,
         paymentPhone: phone,
         method: 'easypaisa',
-        amount: 9999,
+        amount: YEARLY_PRICE,   // 🔥 auto-discounted price
         plan: 'yearly'
       })
     });
@@ -262,7 +319,6 @@ async function verifyYearlyPayment() {
     const data = await res.json();
 
     if(data.success) {
-      // Calculate 1 year from now
       const now = new Date();
       const expiresAt = new Date(now);
       expiresAt.setFullYear(expiresAt.getFullYear() + 1);
@@ -298,7 +354,7 @@ async function verifyYearlyPayment() {
 async function verifyPayment() {
   const tid = document.getElementById('transactionId').value.trim();
   const phone = document.getElementById('paymentPhone').value.trim();
-  
+
   if(!tid || tid.length < 5) {
     showToast("❌ Invalid TID", "Please enter valid Transaction ID", "fa-times", true);
     return;
@@ -321,14 +377,13 @@ async function verifyPayment() {
         transactionId: tid,
         paymentPhone: phone,
         method: 'easypaisa',
-        amount: 999
+        amount: MONTHLY_PRICE   // 🔥 auto-discounted price
       })
     });
 
     const data = await res.json();
 
     if(data.success) {
-      // Calculate 1 month from now
       const now = new Date();
       const expiresAt = new Date(now);
       expiresAt.setMonth(expiresAt.getMonth() + 1);

@@ -96,8 +96,27 @@
 
     <!-- ===== CSS ===== -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="./SellerProfile.css">
+
+    <style>
+      #appSplash{position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#ff8d1a 0%,#f06d10 45%,#e04e08 100%);transition:opacity .5s ease,visibility .5s ease;overflow:hidden;}
+      #appSplash.splash-hide{opacity:0;visibility:hidden;pointer-events:none;}
+      #appSplash .splash-glow{position:absolute;width:70vmax;height:70vmax;top:10%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,225,180,.35) 0%,rgba(255,225,180,0) 70%);filter:blur(10px);pointer-events:none;}
+      #appSplash .splash-icon{position:relative;width:124px;height:124px;background:#fff;border-radius:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 38px rgba(110,30,0,.45),0 4px 10px rgba(110,30,0,.25);margin-bottom:26px;animation:splashPop .55s cubic-bezier(.34,1.56,.64,1);}
+      #appSplash .splash-icon img{width:64%;height:auto;display:block;}
+      #appSplash .splash-title{color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;margin:0;letter-spacing:.2px;}
+      #appSplash .splash-subtitle{color:rgba(255,240,222,.9);font-family:'Poppins',sans-serif;font-weight:500;font-size:12px;letter-spacing:3px;margin:8px 0 0;}
+      #appSplash .splash-dots{position:absolute;bottom:9%;display:flex;gap:10px;}
+      #appSplash .splash-dots span{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.35;animation:splashDotPulse 1.2s ease-in-out infinite;}
+      #appSplash .splash-dots span:nth-child(2){animation-delay:.2s;}
+      #appSplash .splash-dots span:nth-child(3){animation-delay:.4s;}
+      @keyframes splashPop{0%{transform:scale(.6);opacity:0;}100%{transform:scale(1);opacity:1;}}
+      @keyframes splashDotPulse{0%,100%{opacity:.3;transform:scale(1);}50%{opacity:1;transform:scale(1.25);}}
+    </style>
 
     <!-- ===== PWA ===== -->
     <meta name="theme-color" content="#ff6b00">
@@ -115,6 +134,17 @@
 </head>
 
 <body>
+<!-- ===== APP SPLASH SCREEN ===== -->
+<div id="appSplash">
+  <div class="splash-glow"></div>
+  <div class="splash-icon">
+    <img src="Delight icons/D-mark-clean.png" alt="Delight Seller" fetchpriority="high">
+  </div>
+  <div class="splash-title">Delight Seller</div>
+  <p class="splash-subtitle">SELLER&nbsp;&nbsp;PANEL</p>
+  <div class="splash-dots"><span></span><span></span><span></span></div>
+</div>
+
 <!-- Theme Toggle -->
 <div class="theme-switch-wrapper">
   <div class="theme-switch" id="themeSwitch" onclick="toggleTheme()">
@@ -422,6 +452,26 @@
 </div>
   <script src="index.js"></script>
 
+  <!-- ===== HIDE APP SPLASH ===== -->
+  <script>
+    (function () {
+      const MIN_SHOW_MS = 700;
+      const shownAt = Date.now();
+      function hideSplash() {
+        const el = document.getElementById('appSplash');
+        if (!el) return;
+        const wait = Math.max(0, MIN_SHOW_MS - (Date.now() - shownAt));
+        setTimeout(() => {
+          el.classList.add('splash-hide');
+          setTimeout(() => el.remove(), 550);
+        }, wait);
+      }
+      if (document.readyState === 'complete') hideSplash();
+      else window.addEventListener('load', hideSplash);
+      setTimeout(hideSplash, 4000);
+    })();
+  </script>
+
   <!-- ✅ Chat Badge Counter -->
   <script>
   (function() {
@@ -499,7 +549,7 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;">
             <button onclick="installSellerPWA()" style="background:#ff6b00;color:white;border:none;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;">Install</button>
-            <button onclick="document.getElementById('pwa-banner').remove();" style="background:none;border:none;color:#999;font-size:11px;cursor:pointer;">Bad mein</button>
+            <button onclick="document.getElementById('pwa-banner').remove();" style="background:none;border:none;color:#999;font-size:11px;cursor:pointer;">Later</button>
           </div>
         </div>
         <style>

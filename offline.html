@@ -3,55 +3,324 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Delightpk Seller - Offline</title>
+  <title>Delight PK — Offline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy:    #0D1B2A;
+      --navy-mid:#132236;
+      --navy-rim:#1C3150;
+      --saffron: #F5A623;
+      --coral:   #FF6B35;
+      --cream:   #F8F4EF;
+      --muted:   #8E9BAE;
+      --white:   #FFFFFF;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #ff6b00, #ff8c00);
-      height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--navy);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: white;
-      text-align: center;
       padding: 24px;
+      position: relative;
+      overflow: hidden;
     }
-    .logo {
-      width: 80px; height: 80px;
-      background: white;
-      border-radius: 20px;
+
+    /* Background texture dots */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(245,166,35,0.06) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    /* Ambient glow */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(255,107,53,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Logo bar */
+    .logo-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--coral);
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--cream);
+      letter-spacing: 0.02em;
+    }
+
+    .logo-text span {
+      color: var(--saffron);
+    }
+
+    /* Main card */
+    .card {
+      position: relative;
+      background: var(--navy-mid);
+      border: 1px solid var(--navy-rim);
+      border-radius: 28px;
+      padding: 56px 48px 48px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 32px 64px rgba(0,0,0,0.45),
+        0 8px 24px rgba(0,0,0,0.3);
+      z-index: 1;
+    }
+
+    /* Signal animation */
+    .signal-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 36px;
+    }
+
+    .signal-icon {
+      position: relative;
+      z-index: 2;
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--coral), var(--saffron));
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 32px rgba(255,107,53,0.35);
     }
-    .logo img { width: 56px; height: 56px; border-radius: 12px; }
-    h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-    .subtitle { font-size: 13px; opacity: 0.8; margin-bottom: 6px; }
-    p { font-size: 15px; opacity: 0.85; line-height: 1.6; margin-bottom: 32px; }
-    button {
-      background: white;
-      color: #ff6b00;
-      border: none;
-      padding: 14px 32px;
-      border-radius: 30px;
+
+    .signal-icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,107,53,0.3);
+      animation: ripple 2.4s ease-out infinite;
+    }
+
+    .ring:nth-child(1) { width: 100px; height: 100px; animation-delay: 0s; }
+    .ring:nth-child(2) { width: 130px; height: 130px; animation-delay: 0.6s; }
+    .ring:nth-child(3) { width: 160px; height: 160px; animation-delay: 1.2s; }
+
+    @keyframes ripple {
+      0%   { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
+      100% { opacity: 0;   transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    /* Status pill */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,107,53,0.12);
+      border: 1px solid rgba(255,107,53,0.25);
+      border-radius: 100px;
+      padding: 5px 14px;
+      margin-bottom: 20px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--coral);
+      animation: pulse-dot 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.75); }
+    }
+
+    .status-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--coral);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Heading */
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--cream);
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+
+    /* Subtext */
+    p {
       font-size: 15px;
-      font-weight: 700;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    /* Divider */
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--coral), var(--saffron));
+      border-radius: 2px;
+      margin: 0 auto 28px;
+    }
+    /* Button */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--coral) 0%, var(--saffron) 100%);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 8px 28px rgba(255,107,53,0.35);
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(255,107,53,0.45);
+    }
+
+    .btn:hover::after { background: rgba(255,255,255,0.08); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Footer note */
+    .footer-note {
+      margin-top: 24px;
+      font-size: 12px;
+      color: rgba(142,155,174,0.5);
+      letter-spacing: 0.02em;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 44px 28px 36px; }
+      h1 { font-size: 26px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ring, .status-dot { animation: none; }
     }
   </style>
 </head>
 <body>
-  <div class="logo">
-    <img src="/icon-192.png" alt="Delightpk Seller">
+
+  <div class="logo-bar">
+    <div class="logo-dot"></div>
+    <div class="logo-text">Delight <span>PK</span></div>
   </div>
-  <div class="subtitle">Delightpk Seller Portal</div>
-  <h1>Internet Nahi Hai 📶</h1>
-  <p>Internet connection check karo aur dobara try karo۔</p>
-  <button onclick="window.location.reload()">🔄 Dobara Try Karo</button>
+
+  <div class="card">
+
+    <div class="signal-wrap">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="signal-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 6C3.85 3.69 7.27 2.5 12 2.5C16.73 2.5 20.15 3.69 23 6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M4.5 10C6.64 8.28 9.19 7.5 12 7.5C14.81 7.5 17.36 8.28 19.5 10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M8.5 14C9.93 12.93 10.9 12.5 12 12.5C13.1 12.5 14.07 12.93 15.5 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <line x1="12" y1="20" x2="12" y2="20" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      <span class="status-text">No Connection</span>
+    </div>
+
+    <h1>No Internet<br>Connection</h1>
+
+    <div class="divider"></div>
+
+    <p>Check your network and try again.</p>
+
+    <button class="btn" onclick="window.location.reload()">
+      <span class="btn-inner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Try Again
+      </span>
+    </button>
+
+  </div>
+
+  <p class="footer-note">© 2026 Delight PK · All rights reserved</p>
+
 </body>
 </html>

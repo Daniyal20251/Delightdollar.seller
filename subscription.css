@@ -400,3 +400,42 @@ body {
   .modal-box { padding: 20px; max-height: 95vh; }
   .qr-section .qr-image-wrapper img { width: 240px; }
 }
+
+/* ===== DISCOUNT / OLD PRICE STYLES ===== */
+.plan-price-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+.plan-old-price {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.plan-card .plan-price {
+  margin-bottom: 0;
+}
+.plan-billing {
+  margin-bottom: 25px;
+}
+
+/* Discount badge on cards */
+.plan-paid .badge-discount,
+.plan-yearly .badge-discount {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
