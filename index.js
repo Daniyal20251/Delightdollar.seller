@@ -401,6 +401,9 @@ function updateUIForPlan(plan) {
 
   // ===== SECURITY APPLY — har plan update ke baad =====
   applyPaymentSecurity(isPremiumActive, currentKycStatus);
+
+  // ===== CHECK PREMIUM EXPIRY ALERT =====
+  checkPremiumExpiry(plan);
 }
 
 // ===== CHECK ANALYTICS ACCESS =====
@@ -1273,3 +1276,55 @@ function logout() {
 setInterval(() => {
   if (seller) { checkNewOrders(); checkUnreadChats(); }
 }, 10000);
+
+// ===== PREMIUM EXPIRY ALERT SYSTEM =====
+function checkPremiumExpiry(plan) {
+  if (!plan || (plan.plan !== 'premium' && plan.plan !== 'yearly')) return;
+  if (!plan.expiresAt) return;
+
+  const alert       = document.getElementById('premiumExpiryAlert');
+  const alertTitle  = document.getElementById('alertTitle');
+  const alertSub    = document.getElementById('alertSubtitle');
+  const alertIcon   = document.getElementById('alertIcon');
+  const closeBtn    = document.getElementById('alertCloseBtn');
+  const badge       = document.getElementById('dangerZoneBadge');
+
+  const now         = new Date();
+  const expiry      = new Date(plan.expiresAt);
+  const msLeft      = expiry - now;
+  const daysLeft    = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+  const expireDate  = expiry.toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  if (plan.isExpired || msLeft <= 0) {
+    // ─── EXPIRED: Danger Zone ───────────────────────────
+    alert.className = 'state-danger';
+    alertIcon.textContent = '🚨';
+    alertTitle.textContent = '⚠️  DANGER ZONE — Premium Subscription Expired';
+    alertSub.innerHTML =
+      `Your Premium plan expired on <strong>${expireDate}</strong>. ` +
+      `Your store is now in <strong>Danger Zone</strong> and will be <strong>permanently shut down</strong> unless you renew immediately. ` +
+      `All premium features have been disabled.`;
+
+    // No dismiss on danger
+    if (closeBtn) closeBtn.style.display = 'none';
+
+    // Add danger-zone border to body
+    document.body.classList.add('danger-zone');
+
+    // Show flashing danger badge in heading if it exists
+    if (badge) { badge.style.display = 'inline'; badge.textContent = '⚠ DANGER ZONE'; }
+
+  } else if (daysLeft <= 10) {
+    // ─── WARNING: 10 days or less remaining ─────────────
+    alert.className = 'state-warning';
+    alertIcon.textContent = '⏰';
+    alertTitle.textContent = `Premium Plan Expiring in ${daysLeft} Day${daysLeft === 1 ? '' : 's'}`;
+    alertSub.innerHTML =
+      `Your Premium subscription will expire on <strong>${expireDate}</strong>. ` +
+      `Renew now to avoid service interruption. After expiry, your store will enter <strong>Danger Zone</strong> ` +
+      `and risk permanent shutdown.`;
+
+    if (closeBtn) closeBtn.style.display = 'block';
+  }
+}
+// =============================================

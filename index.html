@@ -115,6 +115,20 @@
 </head>
 
 <body>
+
+<!-- ===== PREMIUM EXPIRY ALERT BANNER ===== -->
+<div id="premiumExpiryAlert">
+  <div class="alert-inner">
+    <div class="alert-icon" id="alertIcon">⚠️</div>
+    <div class="alert-body">
+      <div class="alert-title" id="alertTitle">Premium Plan Expiring Soon</div>
+      <div class="alert-subtitle" id="alertSubtitle"></div>
+      <button class="alert-action-btn" onclick="goToSubscription()" id="alertActionBtn">🔄 Renew Now</button>
+    </div>
+    <button class="alert-close-btn" onclick="document.getElementById('premiumExpiryAlert').style.display='none'" id="alertCloseBtn" title="Dismiss">✕</button>
+  </div>
+</div>
+<!-- ========================================= -->
 <!-- Theme Toggle -->
 <div class="theme-switch-wrapper">
   <div class="theme-switch" id="themeSwitch" onclick="toggleTheme()">
@@ -132,7 +146,7 @@
 
 
 <div class="container" id="mainContainer">
-  <h2>My Profile <span id="premiumBadge" style="display:none;"><span class="premium-badge"><i class="fas fa-crown"></i> PREMIUM</span></span></h2>
+  <h2>My Profile <span id="premiumBadge" style="display:none;"><span class="premium-badge"><i class="fas fa-crown"></i> PREMIUM</span></span><span id="dangerZoneBadge"></span></h2>
 
   <div id="planStatus" class="plan-status free">
     <i class="fas fa-spinner fa-spin"></i> Loading plan...
@@ -268,14 +282,14 @@
 
       <p class="kyc-note"><i class="fas fa-info-circle"></i> After submitting your details, your identity will be verified through <b>NADRA Verification</b> or <b>Manual Verification.</b></p>
 
-      <div id="kycPendingMsg" style="display:none; background:rgba(245,158,11,0.12); border:1px solid #f59e0b; border-radius:10px; padding:12px 14px; margin:10px 0; font-size:13px; color:#f59e0b;">
+      <div id="kycPendingMsg" class="kyc-status-msg kyc-pending" style="display:none;">
         <i class="fas fa-clock"></i> <b>Verification Under Review.</b> Your identity is being verified via NADRA Verification or Manual Verification. Please wait for approval.
       </div>
-      <div id="kycApprovedMsg" style="display:none; background:rgba(34,197,94,0.12); border:1px solid #22c55e; border-radius:10px; padding:12px 14px; margin:10px 0; font-size:13px; color:#22c55e;">
+      <div id="kycApprovedMsg" class="kyc-status-msg kyc-approved" style="display:none;">
         <i class="fas fa-check-circle"></i> <b>Identity Verified!</b> Your payment methods (EasyPaisa & JazzCash) are now unlocked.
       </div>
 
-      <button class="btn-kyc-submit" id="kycSubmitBtn" onclick="submitKyc()" style="width:100%; padding:13px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; margin-top:8px; letter-spacing:0.3px;">
+      <button class="btn-kyc-submit" id="kycSubmitBtn" onclick="submitKyc()">
         <i class="fas fa-id-card"></i> Submit for Verification
       </button>
     </div>
@@ -286,6 +300,19 @@
     <a id="storeLink" href="#" target="_blank"></a>
     <button class="btn-success" onclick="copyStoreLink()">📋 Copy Link</button>
   </div>
+
+  <!-- ===== STORE THEME SECTION ===== -->
+  <div class="theme-section" id="themeSection" onclick="location.href='storeTheme.html'">
+    <div style="width:44px;height:44px;background:linear-gradient(135deg,#ff5500,#ff9500);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">🎨</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:800;color:var(--txt-1)">Store Theme</div>
+      <div style="font-size:11.5px;color:var(--accent);font-weight:600;margin-top:2px" id="currentThemeLabel">
+        Active: <span id="activeThemeDisplay">Loading...</span>
+      </div>
+    </div>
+    <i class="fas fa-chevron-right" style="color:var(--accent);font-size:13px"></i>
+  </div>
+  <!-- ====================================== -->
 
   <!-- Custom Domain Section -->
   <div class="domain-section locked" id="domainSection">
@@ -315,7 +342,6 @@
       <span class="upgrade-text">🔓 Upgrade to Premium to unlock Analytics</span>
     </div>
     <div id="analyticsUnlockedSection" style="display:none;">
-      <button class="btn-secondary" onclick="goToAnalytics()">📊 View Analytics</button>
     </div>
   </div>
 
@@ -396,8 +422,6 @@
     </div>
   </div>
 
-  <button class="btn-primary" id="uploadBtn" onclick="goToSellerPanel()">📤 Upload Product</button>
-
   <div id="adsBtnWrapper" style="display:none;">
     <button class="btn-secondary" onclick="goToUploadAds()">📢 Upload Ads (Admin)</button>
   </div>
@@ -406,7 +430,7 @@
     <i class="fas fa-crown"></i> Upgrade to Premium - Rs.1499/month
   </button>
 
-  <h2 id="welcomeText"></h2>
+  <p id="welcomeText"></p>
   <button class="btn-danger" onclick="logout()">🚪 Logout</button>
 </div>
 
@@ -521,6 +545,34 @@
         if (b) b.remove();
       });
     }
+  </script>
+
+  <script>
+  // Show active theme name on profile page
+  (async function() {
+    const phone = localStorage.getItem("sellerPhone");
+    const el = document.getElementById("activeThemeDisplay");
+    if (!el) return;
+    const THEME_NAMES = {
+      default:"🔥 Delight Orange", midnight:"🌙 Midnight Blue", rose:"🌹 Rose Gold",
+      forest:"🌿 Forest Green", ocean:"🌊 Ocean Blue", purple:"💜 Royal Purple",
+      golden:"✨ Golden Luxury", teal:"🦋 Teal Breeze", sunset:"🌅 Sunset Vibes",
+      cherry:"🍒 Cherry Blossom", slate:"🪨 Slate Dark", coral:"🪸 Coral Reef",
+      indigo:"🔷 Indigo Night", mint:"🍃 Mint Fresh", crimson:"❤️ Crimson Power",
+      cyber:"🤖 Cyber Neon", lavender:"🪻 Lavender Dream", earth:"🌍 Earthy Brown",
+      sky:"☁️ Sky White", aurora:"🌌 Aurora Borealis", olive:"🫒 Olive & Cream",
+      black:"🖤 Pure Black"
+    };
+    try {
+      const res = await fetch("https://delight-backend--araindaniyalo2.replit.app/seller-theme/" + phone);
+      const d = await res.json();
+      const id = (d.success && d.theme) ? d.theme : "default";
+      el.textContent = THEME_NAMES[id] || id;
+    } catch(e) {
+      const saved = localStorage.getItem("storeTheme");
+      el.textContent = saved ? (THEME_NAMES[saved] || saved) : "Delight Orange";
+    }
+  })();
   </script>
 
 </body>
