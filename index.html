@@ -301,17 +301,29 @@
     <button class="btn-success" onclick="copyStoreLink()">📋 Copy Link</button>
   </div>
 
-  <!-- ===== STORE THEME SECTION ===== -->
-  <div class="theme-section" id="themeSection" onclick="location.href='storeTheme.html'">
-    <div style="width:44px;height:44px;background:linear-gradient(135deg,#ff5500,#ff9500);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">🎨</div>
-    <div style="flex:1">
-      <div style="font-size:14px;font-weight:800;color:var(--txt-1)">Store Theme</div>
-      <div style="font-size:11.5px;color:var(--accent);font-weight:600;margin-top:2px" id="currentThemeLabel">
-        Active: <span id="activeThemeDisplay">Loading...</span>
-      </div>
+<!-- ===== STORE THEME SECTION ===== -->
+<div id="themeSectionWrapper">
+    <!-- Locked Overlay (Free Plan) -->
+    <div class="theme-locked-overlay" id="themeLockedOverlay" onclick="goToSubscription()">
+        <div class="theme-locked-content">
+            <i class="fas fa-lock"></i>
+            <p>Store Theme Locked</p>
+            <span class="upgrade-text">🔓 Upgrade to Premium to customize your store theme</span>
+        </div>
     </div>
-    <i class="fas fa-chevron-right" style="color:var(--accent);font-size:13px"></i>
-  </div>
+    
+    <!-- Unlocked Section (Premium) -->
+    <div class="theme-section" id="themeSection" style="display:none;" onclick="location.href='storeTheme.html'">
+        <div style="width:44px;height:44px;background:linear-gradient(135deg,#ff5500,#ff9500);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">🎨</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:800;color:var(--txt-1)">Store Theme</div>
+          <div style="font-size:11.5px;color:var(--accent);font-weight:600;margin-top:2px" id="currentThemeLabel">
+            Active: <span id="activeThemeDisplay">Loading...</span>
+          </div>
+        </div>
+        <i class="fas fa-chevron-right" style="color:var(--accent);font-size:13px"></i>
+    </div>
+</div>
   <!-- ====================================== -->
 
   <!-- Custom Domain Section -->

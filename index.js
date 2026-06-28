@@ -79,7 +79,6 @@ let fakeReviewRating = 5;
 let currentKycStatus = 'not_submitted';
 
 // ===== KYC CHANGE TRACKER =====
-// Sirf tab true hoga jab user ne KYC fields khud type/change kiye hon
 let kycFieldsChanged = false;
 
 // ===== SAFE LOCAL STORAGE HELPERS =====
@@ -128,7 +127,6 @@ function applyPaymentSecurity(isPremium, kycStatus) {
   const paymentLockMsg = document.getElementById('paymentLockMsg');
 
   if (isPremium && kycApproved) {
-    // ✅ FULLY UNLOCKED — Premium + KYC approved
     if (advanceWrapper) advanceWrapper.style.display = 'block';
     if (advanceLockMsg) advanceLockMsg.style.display = 'none';
     if (advanceDeliveryInput) advanceDeliveryInput.disabled = false;
@@ -139,7 +137,6 @@ function applyPaymentSecurity(isPremium, kycStatus) {
     if (paymentLockMsg) paymentLockMsg.style.display = 'none';
 
   } else if (isPremium && !kycApproved) {
-    // ⚠️ PREMIUM but KYC nahi ki — advance visible but disabled, payment locked
     if (advanceWrapper) advanceWrapper.style.display = 'block';
     const advDel = document.getElementById('advanceDeliveryInput');
     if (advDel) advDel.disabled = true;
@@ -157,7 +154,6 @@ function applyPaymentSecurity(isPremium, kycStatus) {
     }
 
   } else {
-    // 🔒 FREE PLAN — advance delivery UNLOCKED for free, payment fully locked
     if (advanceWrapper) advanceWrapper.style.display = 'block';
     if (advanceLockMsg) advanceLockMsg.style.display = 'none';
     if (advanceDeliveryInput) advanceDeliveryInput.disabled = false;
@@ -252,12 +248,16 @@ function updateUIForPlan(plan) {
   const fakeReviewsLockedOverlay = document.getElementById('fakeReviewsLockedOverlay');
   const fakeReviewsUnlockedSection = document.getElementById('fakeReviewsUnlockedSection');
   const upgradeBtn = document.getElementById('upgradeBtn');
+  const themeLockedOverlay = document.getElementById('themeLockedOverlay');
+  const themeSection = document.getElementById('themeSection');
 
   if (!plan || typeof plan !== 'object') {
     planStatus.className = 'plan-status free';
     planStatus.innerHTML = '<i class="fas fa-store"></i> Free Plan Active';
     premiumBadge.style.display = 'none';
     applyPaymentSecurity(false, currentKycStatus);
+    if (themeLockedOverlay) themeLockedOverlay.style.display = 'block';
+    if (themeSection) themeSection.style.display = 'none';
     return;
   }
 
@@ -377,6 +377,8 @@ function updateUIForPlan(plan) {
     if (analyticsUnlockedSection) analyticsUnlockedSection.style.display = 'block';
     if (fakeReviewsLockedOverlay) fakeReviewsLockedOverlay.style.display = 'none';
     if (fakeReviewsUnlockedSection) fakeReviewsUnlockedSection.style.display = 'block';
+    if (themeLockedOverlay) themeLockedOverlay.style.display = 'none';
+    if (themeSection) themeSection.style.display = 'flex';
     loadSellerProducts();
     if (upgradeBtn) upgradeBtn.style.display = 'none';
 
@@ -396,13 +398,12 @@ function updateUIForPlan(plan) {
     if (analyticsUnlockedSection) analyticsUnlockedSection.style.display = 'none';
     if (fakeReviewsLockedOverlay) fakeReviewsLockedOverlay.style.display = 'block';
     if (fakeReviewsUnlockedSection) fakeReviewsUnlockedSection.style.display = 'none';
+    if (themeLockedOverlay) themeLockedOverlay.style.display = 'block';
+    if (themeSection) themeSection.style.display = 'none';
     if (upgradeBtn) upgradeBtn.style.display = 'block';
   }
 
-  // ===== SECURITY APPLY — har plan update ke baad =====
   applyPaymentSecurity(isPremiumActive, currentKycStatus);
-
-  // ===== CHECK PREMIUM EXPIRY ALERT =====
   checkPremiumExpiry(plan);
 }
 
@@ -703,7 +704,6 @@ function copyDomainLink(domain) {
 
 // ===== COLLAPSIBLE SECTIONS =====
 
-// ===== KYC CHANGE LISTENERS — sirf tab flag set ho jab user khud type kare =====
 [kycBusinessNameInput, kycPhoneInput].forEach(el => {
   if (el) el.addEventListener('input', () => { kycFieldsChanged = true; });
 });
@@ -717,12 +717,10 @@ function toggleSection(bodyId, arrowId) {
 
 // ===== KYC SECTION TOGGLE WITH LOCK =====
 function toggleKycSection() {
-  // If KYC is approved, do NOT allow opening
   if (currentKycStatus === "approved") {
     showToast("🔒 Verified", "Your identity is already verified. KYC section is locked.", "fa-lock");
     return;
   }
-  // Otherwise, normal toggle
   toggleSection("kycBody", "kycArrow");
 }
 
@@ -761,7 +759,6 @@ function renderKycStatus(kyc) {
   kycStatusBadge.className = "kyc-status-badge " + status;
   kycStatusBadge.style.display = "inline-block";
 
-  // Show/hide status messages
   const pendingMsg = document.getElementById("kycPendingMsg");
   const approvedMsg = document.getElementById("kycApprovedMsg");
   const kycBtn = document.getElementById("kycSubmitBtn");
@@ -788,23 +785,18 @@ function renderKycStatus(kyc) {
     }
   }
 
-  // ===== KYC LOCK: When verified, section is locked closed =====
   if (status === "approved") {
-    // Show lock icon, hide arrow
     if (kycLockIcon) kycLockIcon.style.display = "inline-block";
     if (kycArrow) kycArrow.style.display = "none";
-    // Close the body and keep it closed
     if (kycBody) {
       kycBody.classList.remove("open");
       kycBody.style.display = "none";
     }
-    // Add locked styling to header
     if (kycSectionHeader) {
       kycSectionHeader.style.cursor = "default";
       kycSectionHeader.style.opacity = "0.85";
     }
   } else {
-    // Unlock - show arrow, hide lock
     if (kycLockIcon) kycLockIcon.style.display = "none";
     if (kycArrow) kycArrow.style.display = "inline-block";
     if (kycSectionHeader) {
@@ -834,7 +826,6 @@ async function submitKyc() {
   const hasCnicFront = cnicFrontInput && cnicFrontInput.files && cnicFrontInput.files[0];
   const hasCnicBack = cnicBackInput && cnicBackInput.files && cnicBackInput.files[0];
 
-  // Validation
   if (!kycName) {
     showToast("⚠️ Name Required", "Please enter your full name for identity verification.", "fa-exclamation-triangle");
     kycBusinessNameInput && kycBusinessNameInput.focus();
@@ -879,13 +870,11 @@ async function submitKyc() {
     const data = await res.json();
 
     if (data.success) {
-      // Update KYC status from response
       currentKycStatus = data.seller?.kyc?.status || "pending";
       renderKycStatus(data.seller?.kyc || { status: "pending" });
       const isPrem = sellerPlan && (sellerPlan.plan === "premium" || sellerPlan.plan === "yearly") && !sellerPlan.isExpired;
       applyPaymentSecurity(isPrem, currentKycStatus);
 
-      // If approved, ensure section is closed and locked
       if (currentKycStatus === "approved") {
         const kycBody = document.getElementById("kycBody");
         if (kycBody) {
@@ -894,7 +883,6 @@ async function submitKyc() {
         }
       }
 
-      // Refresh from server to get latest status
       await refreshKycStatus();
 
       showToast("✅ Verification Submitted!", "Your identity verification request has been submitted. Please wait for NADRA Verification or Manual Verification approval.", "fa-id-card");
@@ -1090,7 +1078,6 @@ async function loadSettings() {
       }
     }
 
-    // ===== KYC — status track karo security ke liye =====
     if (data.kyc) {
       if (data.kyc.businessName) kycBusinessNameInput.value = data.kyc.businessName;
       if (data.kyc.phone) kycPhoneInput.value = data.kyc.phone;
@@ -1104,10 +1091,8 @@ async function loadSettings() {
         cnicBackPreview.style.display = "block";
         cnicBackBox.classList.add("has-image");
       }
-      // ✅ Security tracking
       currentKycStatus = data.kyc.status || 'not_submitted';
       renderKycStatus(data.kyc);
-      // Ensure KYC body is closed if verified
       if (currentKycStatus === "approved") {
         const kycBody = document.getElementById("kycBody");
         if (kycBody) {
@@ -1142,7 +1127,7 @@ window.addEventListener("load", async () => {
   mainContainer.classList.add("loaded");
 });
 
-// ===== UPDATE PROFILE — Security check before saving =====
+// ===== UPDATE PROFILE =====
 async function updateProfile() {
   if (!seller) {
     showToast("❌ Error", "Please login first", "fa-times");
@@ -1157,24 +1142,18 @@ async function updateProfile() {
   formData.append("name", storeInput.value || "");
   formData.append("delivery", deliveryInput.value || "");
 
-  // ===== ADVANCE DELIVERY SECURITY =====
   if (isPremium && kycApproved) {
-    // Premium + KYC approved = advance delivery allowed
     formData.append("advanceDelivery", advanceDeliveryInput.value || "");
   } else if (isPremium && !kycApproved) {
-    // Premium but KYC pending — warn karo
     if (advanceDeliveryInput && advanceDeliveryInput.value) {
       showToast("🔒 Verification Required", "Please complete NADRA Verification or Manual Verification to activate Advance Delivery.", "fa-id-card");
     }
     formData.append("advanceDelivery", "");
   } else {
-    // Free plan — advance delivery allowed
     formData.append("advanceDelivery", advanceDeliveryInput.value || "");
   }
 
-  // ===== PAYMENT METHODS SECURITY =====
   if (isPremium && kycApproved) {
-    // Fully allowed
     formData.append("easypaisaBusinessName", easypaisaBusinessNameInput.value || "");
     formData.append("easypaisaAccountNumber", easypaisaAccountNumberInput.value || "");
     formData.append("jazzcashBusinessName", jazzcashBusinessNameInput.value || "");
@@ -1182,7 +1161,6 @@ async function updateProfile() {
     if (easypaisaQrInput.files && easypaisaQrInput.files[0]) formData.append("easypaisaQr", easypaisaQrInput.files[0]);
     if (jazzcashQrInput.files && jazzcashQrInput.files[0]) formData.append("jazzcashQr", jazzcashQrInput.files[0]);
   } else {
-    // Free plan ya KYC nahi — empty bhejo (server pe kuch save na ho)
     formData.append("easypaisaBusinessName", "");
     formData.append("easypaisaAccountNumber", "");
     formData.append("jazzcashBusinessName", "");
@@ -1190,9 +1168,6 @@ async function updateProfile() {
   }
 
   if (fileInput && fileInput.files && fileInput.files[0]) formData.append("logo", fileInput.files[0]);
-
-  // ✅ KYC fields yahan nahi jayengi — alag "Submit KYC" button se submit hoti hain
-  // Taake store save karne se approved KYC reset na ho
 
   try {
     const controller = new AbortController();
@@ -1231,13 +1206,10 @@ async function updateProfile() {
         cnicBackBox.classList.add("has-image");
       }
       if (data.seller?.kyc) {
-        // ✅ Update KYC status after save
         currentKycStatus = data.seller.kyc.status || 'not_submitted';
         renderKycStatus(data.seller.kyc);
-        // Re-apply security with updated KYC
         const isPrem = sellerPlan && (sellerPlan.plan === 'premium' || sellerPlan.plan === 'yearly') && !sellerPlan.isExpired;
         applyPaymentSecurity(isPrem, currentKycStatus);
-        // Ensure KYC body is closed if verified
         if (currentKycStatus === "approved") {
           const kycBody = document.getElementById("kycBody");
           if (kycBody) {
@@ -1246,7 +1218,7 @@ async function updateProfile() {
           }
         }
       }
-      kycFieldsChanged = false; // reset after successful save
+      kycFieldsChanged = false;
       showToast("✅ Success!", "Store updated successfully", "fa-check");
     } else {
       showToast("⚠️ Error", data.message || "Something went wrong", "fa-exclamation-triangle");
@@ -1296,7 +1268,6 @@ function checkPremiumExpiry(plan) {
   const expireDate  = expiry.toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' });
 
   if (plan.isExpired || msLeft <= 0) {
-    // ─── EXPIRED: Danger Zone ───────────────────────────
     alert.className = 'state-danger';
     alertIcon.textContent = '🚨';
     alertTitle.textContent = '⚠️  DANGER ZONE — Premium Subscription Expired';
@@ -1305,17 +1276,13 @@ function checkPremiumExpiry(plan) {
       `Your store is now in <strong>Danger Zone</strong> and will be <strong>permanently shut down</strong> unless you renew immediately. ` +
       `All premium features have been disabled.`;
 
-    // No dismiss on danger
     if (closeBtn) closeBtn.style.display = 'none';
 
-    // Add danger-zone border to body
     document.body.classList.add('danger-zone');
 
-    // Show flashing danger badge in heading if it exists
     if (badge) { badge.style.display = 'inline'; badge.textContent = '⚠ DANGER ZONE'; }
 
   } else if (daysLeft <= 10) {
-    // ─── WARNING: 10 days or less remaining ─────────────
     alert.className = 'state-warning';
     alertIcon.textContent = '⏰';
     alertTitle.textContent = `Premium Plan Expiring in ${daysLeft} Day${daysLeft === 1 ? '' : 's'}`;
@@ -1327,4 +1294,3 @@ function checkPremiumExpiry(plan) {
     if (closeBtn) closeBtn.style.display = 'block';
   }
 }
-// =============================================
