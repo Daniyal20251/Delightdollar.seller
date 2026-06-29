@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>404 – Delightpk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Navbar ── */
+    header {
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #ebebeb;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .brand img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .brand-name {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: -0.03em;
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content {
+      display: flex;
+      align-items: center;
+      gap: 64px;
+      padding: 48px;
+    }
+
+    /* Left: big 404 */
+    .left {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .big-num {
+      font-size: clamp(8rem, 16vw, 13rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.06em;
+      color: #f0f0f0;
+      user-select: none;
+    }
+    .overlay-num {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: #111;
+    }
+
+    /* Right: text */
+    .right {
+      max-width: 340px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 16px;
+    }
+    .eyebrow::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1.5px;
+      background: #999;
+    }
+    h1 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #111;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .desc {
+      font-size: 0.9rem;
+      color: #888;
+      line-height: 1.65;
+      margin-bottom: 32px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      background: #111;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 10px;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .btn:hover {
+      background: #333;
+      transform: translateY(-1px);
+    }
+    .btn svg {
+      transition: transform 0.15s;
+    }
+    .btn:hover svg {
+      transform: translateX(3px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 20px 48px;
+      border-top: 1px solid #ebebeb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer p {
+      font-size: 0.75rem;
+      color: #bbb;
+    }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: #bbb;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .content {
+        flex-direction: column;
+        text-align: center;
+        gap: 32px;
+        padding: 40px 24px;
+      }
+      .eyebrow { justify-content: center; }
+      header { padding: 0 24px; }
+      footer { padding: 16px 24px; flex-direction: column; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="brand">
+      <img src="Delightpk.png" alt="Delightpk" onerror="this.style.display='none'"/>
+      <span class="brand-name">Delightpk</span>
+    </a>
+  </header>
+
+  <main>
+    <div class="content">
+
+      <div class="left">
+        <div class="big-num">404</div>
+        <div class="overlay-num">404</div>
+      </div>
+
+      <div class="right">
+        <span class="eyebrow">Page Not Found</span>
+        <h1>This page doesn't exist.</h1>
+        <p class="desc">The link may be broken, or the page may have been removed. Check the URL or head back home.</p>
+        <a href="index.html" class="btn">
+          Back to Home
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Delightpk. All rights reserved.</p>
+    <span class="status"><span class="dot"></span> All systems operational</span>
+  </footer>
+
+</body>
+</html>
