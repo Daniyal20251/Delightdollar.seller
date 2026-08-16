@@ -36,9 +36,10 @@
         <li><i class="fas fa-check"></i> Delight Chat</li>
         <li><i class="fas fa-check"></i> Rating Star & Reviews</li>
         <li><i class="fas fa-check"></i> Standard Store Link</li>
-        <li><i class="fas fa-lock"></i> Ads Locked</li>
+        <li><i class="fas fa-lock"></i> 20+ theme</li>
         <li><i class="fas fa-lock"></i> Advance Payment</li>
         <li><i class="fas fa-times"></i> Domain connection</li>
+        <li><i class="fas fa-times"></i> Meta Pixel connection</li>
         <li><i class="fas fa-times"></i> Analytics Chart Dashboard</li>
         <li><i class="fas fa-times"></i> Premium Badge</li>
       </ul>
@@ -59,12 +60,12 @@
       <div class="plan-billing" id="monthlyBilling"></div>
       <ul class="features-list">
         <li><i class="fas fa-check"></i>All Features</li>
-        <li><i class="fas fa-check"></i> <strong>7 Ads Unlocked</strong></li>
         <li><i class="fas fa-check"></i> Delight Chat</li>
         <li><i class="fas fa-check"></i> Rating Star & Reviews</li>
         <li><i class="fas fa-check"></i> Advance Payment</li>
         <li><i class="fas fa-check"></i> Connect Easypaisa & Jazzcash Raast</li>
         <li><i class="fas fa-check"></i> Domain connection</li>
+        <li><i class="fas fa-check"></i> 20+ theme</li>
         <li><i class="fas fa-check"></i> Order Management</li>
         <li><i class="fas fa-check"></i> Analytics Chart Dashboard</li>
         <li><i class="fas fa-check"></i> Premium Support</li>
@@ -88,12 +89,13 @@
       <ul class="features-list">
         <li><i class="fas fa-check"></i>All Features</li>
         <li><i class="fas fa-check"></i> <strong id="yearlySaveText"></strong></li>
-        <li><i class="fas fa-check"></i> <strong>7 Ads Unlocked</strong></li>
+        <li><i class="fas fa-check"></i> <strong>20+ theme</strong></li>
         <li><i class="fas fa-check"></i> Delight Chat</li>
         <li><i class="fas fa-check"></i> Rating Star & Reviews</li>
         <li><i class="fas fa-check"></i> Advance Payment</li>
         <li><i class="fas fa-check"></i> Connect Easypaisa & Jazzcash Raast</li>
-        <li><i class="fas fa-check"></i> Domain connection</li>
+        <li><i class="fas fa-check"></i> Domain Free</li>
+        <li><i class="fas fa-check"></i> Meta pixel connection</li>
         <li><i class="fas fa-check"></i> Order Management</li>
         <li><i class="fas fa-check"></i> Analytics Chart Dashboard</li>
         <li><i class="fas fa-check"></i> Premium Support</li>
@@ -140,13 +142,13 @@
 
     <!-- Transaction ID -->
     <div class="input-group">
-      <label><i class="fas fa-receipt"></i> Transaction ID (TID)</label>
-      <input type="text" id="transactionId" placeholder="e.g. ID#123XXXXX" maxlength="20">
+      <label><i class="fas fa-receipt"></i> Promo Code</label>
+      <input type="text" id="transactionId" placeholder="Daniyal16" maxlength="20">
     </div>
 
     <!-- Phone Number -->
     <div class="input-group">
-      <label><i class="fas fa-phone"></i> Your Phone Number (used for payment)</label>
+      <label><i class="fas fa-phone"></i> Your Phone Number</label>
       <input type="text" id="paymentPhone" placeholder="03XX-XXXXXXX" maxlength="11">
     </div>
 
@@ -217,12 +219,13 @@
 // ═══════════════════════════════════════════════════════════
 // 🎯 SIRF YAHAN PERCENTAGE LIKHO — BAQUI SAB AUTO CALCULATE
 // ═══════════════════════════════════════════════════════════
-const DISCOUNT_PERCENT = 34;   // <-- 🔥 Yahan 30% ya koi bhi % likho
+const DISCOUNT_PERCENT = 100; 
+const DISCOUNT_PERCENTYear = 30;// <-- 🔥 Yahan 30% ya koi bhi % likho
 // ═══════════════════════════════════════════════════════════
 
 // Base prices (without discount)
-const BASE_MONTHLY = 1000;
-const BASE_YEARLY  = 15000;
+const BASE_MONTHLY = 999;
+const BASE_YEARLY  = 9999;
 
 // Auto-calculate discounted prices
 function calcDiscount(price, percent) {
@@ -230,7 +233,7 @@ function calcDiscount(price, percent) {
 }
 
 const MONTHLY_PRICE = calcDiscount(BASE_MONTHLY, DISCOUNT_PERCENT);
-const YEARLY_PRICE  = calcDiscount(BASE_YEARLY,  DISCOUNT_PERCENT);
+const YEARLY_PRICE  = calcDiscount(BASE_YEARLY,  DISCOUNT_PERCENTYear);
 const YEARLY_SAVE   = (BASE_MONTHLY * 12) - YEARLY_PRICE;
 
 // Format currency
