@@ -219,8 +219,8 @@
 // ═══════════════════════════════════════════════════════════
 // 🎯 SIRF YAHAN PERCENTAGE LIKHO — BAQUI SAB AUTO CALCULATE
 // ═══════════════════════════════════════════════════════════
-const DISCOUNT_PERCENT = 40; 
-const DISCOUNT_PERCENTYear = 40;// <-- 🔥 Yahan 30% ya koi bhi % likho
+const DISCOUNT_PERCENT = 50; 
+const DISCOUNT_PERCENTYear = 55;// <-- 🔥 Yahan 30% ya koi bhi % likho
 // ═══════════════════════════════════════════════════════════
 
 // Base prices (without discount)
@@ -254,7 +254,7 @@ function fmt(n) {
   // Yearly Plan
   document.getElementById('yearlyOldPrice').textContent = fmt(BASE_YEARLY);
   document.getElementById('yearlyPrice').innerHTML      = fmt(YEARLY_PRICE) + '<span>/year</span>';
-  document.getElementById('yearlyBilling').textContent  = 'Billed yearly via EasyPaisa' + (DISCOUNT_PERCENT > 0 ? ' • ' + DISCOUNT_PERCENT + '% OFF' : '');
+  document.getElementById('yearlyBilling').textContent  = 'Billed yearly via EasyPaisa' + (DISCOUNT_PERCENTYear > 0 ? ' • ' + DISCOUNT_PERCENTYear + '% OFF' : '');
   document.getElementById('yearlySaveText').textContent = 'Save ' + fmt(YEARLY_SAVE) + '/year';
   document.getElementById('yearlyPayAmount').textContent = fmt(YEARLY_PRICE);
 })();
