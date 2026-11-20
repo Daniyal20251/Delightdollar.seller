@@ -347,7 +347,8 @@ h2 {
   font-size: 1.3rem;
   font-weight: 700;
 }
-.modal-box input[type="text"] {
+.modal-box input[type="text"],
+.modal-box input[type="url"] {
   width: 100%;
   padding: 14px 16px;
   border: 1.5px solid var(--border-color);
@@ -359,7 +360,8 @@ h2 {
   transition: border-color 0.2s ease;
   outline: none;
 }
-.modal-box input[type="text"]:focus {
+.modal-box input[type="text"]:focus,
+.modal-box input[type="url"]:focus {
   border-color: var(--accent-peach);
 }
 .modal-box input[type="file"] {
@@ -427,6 +429,36 @@ h2 {
 .modal-box .btn-cancel:hover {
   background: var(--bg-btn-cancel-hover);
 }
+
+.modal-box .field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin: 0 0 6px 2px;
+}
+.modal-box .field-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: -6px 0 14px 2px;
+}
+.link-chip {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 2;
+  max-width: 60%;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(17,17,17,0.78);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.link-chip i { margin-right: 5px; font-size: 10px; }
 
 /* Loading spinner */
 .spinner {
@@ -542,10 +574,13 @@ h2 {
 <!-- ADD/EDIT MODAL -->
 <div class="modal-overlay" id="adModal">
   <div class="modal-box">
-    <h3>🖼️ Add Ad</h3>
+    <h3 id="adModalTitle">🖼️ Add Ad</h3>
     <input type="text" id="adNameInput" placeholder="Ad Name" readonly>
+    <label class="field-label" for="adImageInput" id="adImageLabel">Banner image</label>
     <input type="file" id="adImageInput" accept="image/*">
     <img id="previewImage" class="preview-img" alt="Preview">
+    <label class="field-label" for="adLinkInput">Link (optional)</label>
+    <input type="url" id="adLinkInput" placeholder="https://example.com/my-product" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"
     <div class="btn-group">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
       <button class="btn-save" onclick="saveAd()">Save Ad</button>
@@ -563,6 +598,7 @@ let currentSlotIndex = null;
 let selectedFile = null;
 let currentPlan = null;
 let sellerName = "";
+let slotAds = [];   // har slot ka maujooda ad (ya null)
 
 // ===== GENERATE AD NAMES FROM STORE NAME =====
 function generateAdNames(storeName) {
@@ -689,6 +725,7 @@ async function loadAds() {
 
     const container = document.getElementById("adSlotsContainer");
     container.innerHTML = "";
+    slotAds = new Array(7).fill(null);
 
     for (let i = 0; i < 7; i++) {
       const slotName = AD_NAMES[i];
@@ -703,7 +740,7 @@ async function loadAds() {
         }
       }
 
-      console.log(`Slot ${i+1} (${slotName}) -> Matched ad:`, ad ? ad.id : "None");
+      slotAds[i] = ad;
 
       const slotDiv = document.createElement("div");
       slotDiv.className = `ad-slot ${ad ? 'has-ad' : ''}`;
@@ -714,7 +751,8 @@ async function loadAds() {
         slotDiv.innerHTML = `
           <div class="ad-content">
             <span class="slot-label">Slot ${i+1}</span>
-            <img src="${imageUrl}" alt="${slotName}" loading="eager">
+            <img src="${imageUrl}" alt="${escapeHtml(slotName)}" loading="eager">
+            ${ad.link ? `<span class="link-chip"><i class="fas fa-link"></i>${escapeHtml(shortLink(ad.link))}</span>` : ""}
             <button class="delete-btn" onclick="event.stopPropagation(); deleteAd(${ad.id}, ${i})">Delete</button>
           </div>
         `;
@@ -753,12 +791,46 @@ function getAdName(ad) {
   return "";
 }
 
+// ===== HELPERS =====
+function escapeHtml(v) {
+  return String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function shortLink(url) {
+  try { const u = new URL(url); return u.host + (u.pathname !== "/" ? u.pathname : ""); }
+  catch (e) { return url; }
+}
+// Sirf http/https; domain likha ho to https:// laga do. Invalid => null
+function normalizeLink(raw) {
+  let l = (raw || "").trim();
+  if (!l) return "";
+  if (!/^https?:\/\//i.test(l)) {
+    if (/^[a-z][a-z0-9+.-]*:/i.test(l)) return null;
+    l = "https://" + l.replace(/^\/+/, "");
+  }
+  try {
+    const u = new URL(l);
+    if (!u.hostname.includes(".")) return null;
+    return u.href;
+  } catch (e) { return null; }
+}
+
 // ===== MODAL =====
 function openModal(index) {
   currentSlotIndex = index;
+  const ad = slotAds[index];
+  const preview = document.getElementById("previewImage");
   document.getElementById("adNameInput").value = AD_NAMES[index];
   document.getElementById("adImageInput").value = "";
-  document.getElementById("previewImage").style.display = "none";
+  document.getElementById("adLinkInput").value = ad && ad.link ? ad.link : "";
+  document.getElementById("adModalTitle").textContent = ad ? "✏️ Edit Ad" : "🖼️ Add Ad";
+  document.getElementById("adImageLabel").textContent = ad ? "Change image (optional)" : "Banner image";
+  if (ad && ad.image) {
+    preview.src = ad.image;
+    preview.style.display = "block";
+  } else {
+    preview.style.display = "none";
+  }
   selectedFile = null;
   document.getElementById("adModal").classList.add("active");
 }
@@ -785,41 +857,53 @@ document.getElementById("adImageInput").addEventListener("change", function(e) {
 
 // ===== SAVE AD =====
 async function saveAd() {
-  if (!selectedFile) {
+  const existing = slotAds[currentSlotIndex];
+
+  // Link check
+  const rawLink = document.getElementById("adLinkInput").value;
+  const link = normalizeLink(rawLink);
+  if (link === null) {
+    showToast("❌ Invalid link", "Poora address likhein, jaise https://example.com", true);
+    return;
+  }
+
+  // Naye slot ke liye image zaroori hai, edit mein optional
+  if (!existing && !selectedFile) {
     showToast("Please select an image", "", true);
     return;
   }
 
   const saveBtn = document.querySelector('.modal-box .btn-save');
   const originalText = saveBtn.innerHTML;
-
-  // Show loading spinner
   saveBtn.disabled = true;
-  saveBtn.innerHTML = '<span class="spinner"></span> Uploading...';
+  saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
 
   const formData = new FormData();
-  formData.append("title", AD_NAMES[currentSlotIndex]);
-  formData.append("image", selectedFile);
+  formData.append("link", link);
+  if (selectedFile) formData.append("image", selectedFile);
 
   try {
-    const res = await fetch(`${apiBase}/admin/add-ad`, {
-      method: "POST",
-      body: formData
-    });
+    let res;
+    if (existing) {
+      // Maujooda ad update (duplicate nahi banta)
+      res = await fetch(`${apiBase}/admin/update-ad/${existing.id}`, { method: "PUT", body: formData });
+    } else {
+      formData.append("title", AD_NAMES[currentSlotIndex]);
+      res = await fetch(`${apiBase}/admin/add-ad`, { method: "POST", body: formData });
+    }
     const data = await res.json();
 
-    if(data.success){
-      showToast("✅ Ad Saved", `${AD_NAMES[currentSlotIndex]} uploaded successfully`);
+    if (data.success) {
+      showToast("✅ Ad Saved", `${AD_NAMES[currentSlotIndex]} ${existing ? "updated" : "uploaded"} successfully`);
       closeModal();
       loadAds();
     } else {
       showToast("❌ Failed", data.message || "Failed to save ad", true);
     }
-  } catch(err){
+  } catch (err) {
     console.error(err);
     showToast("❌ Error", "Network error. Please try again.", true);
   } finally {
-    // Reset button
     saveBtn.disabled = false;
     saveBtn.innerHTML = originalText;
   }
