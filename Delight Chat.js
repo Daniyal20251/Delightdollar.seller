@@ -1,4 +1,4 @@
-const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
+const API_BASE = "https://delight-lilac.vercel.app";
 
 // ─── State ───
 let currentProduct = null;   // { id, title, imageUrls[], price, discount, ... }

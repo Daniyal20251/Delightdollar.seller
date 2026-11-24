@@ -9,7 +9,7 @@ const searchPanel = document.getElementById("searchPanel");
 const recentList = document.getElementById("recentSearches");
 const clearBtn = document.getElementById("clearHistoryBtn");
 
-const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
+const API_BASE = "https://delight-lilac.vercel.app";
 
 // Recent searches
 let recentSearches = JSON.parse(localStorage.getItem("recentSearches")) || [];

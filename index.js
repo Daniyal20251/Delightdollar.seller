@@ -30,7 +30,7 @@ function toggleTheme() {
 
 initTheme();
 
-const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
+const API_BASE = "https://delight-lilac.vercel.app";
 
 // ===== DOM REFERENCES (moved to top so all functions can access safely) =====
 const profileImg = document.getElementById("profile-img");
@@ -619,7 +619,7 @@ async function saveDomain() {
     showToast("⚠️ Invalid Domain", "Please enter a valid domain like: yourstore.com", "fa-exclamation-triangle");
     return;
   }
-  if (domain.includes('delightpk.shop') || domain.includes('replit.app') || domain.includes('railway.app')) {
+  if (domain.includes('delightpk.shop') || domain.includes('vercel.app') || domain.includes('railway.app')) {
     showToast("❌ Not Allowed", "Use your own domain, not our platform domain", "fa-times");
     return;
   }

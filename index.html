@@ -461,7 +461,7 @@
   <!-- ✅ Chat Badge Counter -->
   <script>
   (function() {
-    const API_BASE = "https://delight-backend--araindaniyalo2.replit.app";
+    const API_BASE = "https://delight-lilac.vercel.app";
     let prevUnread = -1;
 
     function getSeller() {
@@ -576,7 +576,7 @@
       black:"🖤 Pure Black"
     };
     try {
-      const res = await fetch("https://delight-backend--araindaniyalo2.replit.app/seller-theme/" + phone);
+      const res = await fetch("https://delight-lilac.vercel.app/seller-theme/" + phone);
       const d = await res.json();
       const id = (d.success && d.theme) ? d.theme : "default";
       el.textContent = THEME_NAMES[id] || id;

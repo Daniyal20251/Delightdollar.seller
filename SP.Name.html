@@ -196,7 +196,7 @@ async function loadSettings(){
     console.log("Loading settings for phone:", seller.phone);
     
     const res = await fetch(
-      `https://delight-backend--araindaniyalo2.replit.app/settings?phone=${seller.phone}`
+      `https://delight-lilac.vercel.app/settings?phone=${seller.phone}`
     );
     const data = await res.json();
     console.log("Settings loaded:", data);
@@ -264,7 +264,7 @@ async function createStore(){
     console.log("Sending update with phone:", seller.phone);
     
     const res = await fetch(
-      "https://delight-backend--araindaniyalo2.replit.app/update-settings",
+      "https://delight-lilac.vercel.app/update-settings",
       { method:"POST", body:formData }
     );
 

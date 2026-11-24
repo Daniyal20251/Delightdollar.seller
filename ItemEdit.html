@@ -490,7 +490,7 @@ document.getElementById("productForm").addEventListener("submit", async function
 
   try{
     const res = await fetch(
-      `https://delight-backend--araindaniyalo2.replit.app/edit-product/${editItem.id}`,
+      `https://delight-lilac.vercel.app/edit-product/${editItem.id}`,
       {method: "PUT", body: fd}
     );
     const data = await res.json();

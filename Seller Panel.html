@@ -226,7 +226,7 @@ async function checkPlanAndShowBanner() {
   banner.classList.remove("show");
 
   try {
-    const res = await fetch(`https://delight-backend--araindaniyalo2.replit.app/plan-status/${sellerPhone}`);
+    const res = await fetch(`https://delight-lilac.vercel.app/plan-status/${sellerPhone}`);
     const data = await res.json();
 
     if (data.success) {
@@ -488,7 +488,7 @@ document.getElementById("productForm").addEventListener("submit", async function
   videoFiles.forEach(f => { if (f) formData.append("videos", f); });
 
   try {
-    const res = await fetch("https://delight-backend--araindaniyalo2.replit.app/add-product", {
+    const res = await fetch("https://delight-lilac.vercel.app/add-product", {
       method: "POST", body: formData
     });
     const data = await res.json();
